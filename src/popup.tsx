@@ -15,6 +15,11 @@ const Popup = () => {
   const [isPostAlert, setIsPostAlert] = useState<boolean>(false);
   const toast = useToast();
 
+  var url: string | undefined;
+  chrome.tabs.query({ active: true, currentWindow: true }, (e) => {
+    url = e[0].url;
+  });
+
   useEffect(() => {
     chrome.storage.local.get(null, (data) => {
       const targetDomain: string[] = data.targetDomain == undefined ? [] : data.targetDomain;
@@ -41,11 +46,13 @@ const Popup = () => {
       isClosable: true,
       containerStyle: {maxWidth: '100px'}
     });
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id!, {
-        target: "honbanAlertHandler:contentScript",
+    if (url != undefined) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id!, {
+          target: "honbanAlertHandler:contentScript",
+        });
       });
-    });
+    }
   }
 
   const changePostAlert = () => {
@@ -58,11 +65,13 @@ const Popup = () => {
       duration: 9000,
       isClosable: true,
     });
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      chrome.tabs.sendMessage(tabs[0].id!, {
-        target: "honbanAlertHandler:contentScript",
+    if (url != undefined) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id!, {
+          target: "honbanAlertHandler:contentScript",
+        });
       });
-    });
+    }
   };
 
   const changeTextHandler = (text: string, index: number) => {
@@ -107,11 +116,13 @@ const Popup = () => {
       duration: 9000,
       isClosable: true,
     });
-    chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-      chrome.tabs.sendMessage(tabs[0].id!, {
-        target: 'honbanAlertHandler:contentScript'
-      })
-    })
+    if (url != undefined) {
+      chrome.tabs.query({active: true, currentWindow: true}, tabs => {
+        chrome.tabs.sendMessage(tabs[0].id!, {
+          target: 'honbanAlertHandler:contentScript'
+        })
+      });
+    }
   }
   return (
     <Box w="300px" h="500px" padding="15px" overflow="hidden scroll">
