@@ -1,6 +1,6 @@
-# Chrome Extension Sample
+# Chrome Extension Honban Alert
 
-Chrome Extension Sample
+本番環境として指定したドメインのWebページを表示している際にアラートを表示するChrome拡張機能です。
 
 ## Prerequisites
 
