@@ -1,0 +1,8 @@
+{
+  "targetDomain": [
+    "google.com",
+    "github.com"
+  ],
+  "dispBanner": true,
+  "postAlert": true
+}

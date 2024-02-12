@@ -1,0 +1,6 @@
+npm-debug.log
+node_modules/
+dist/
+tmp/
+chrome-extension-sample.code-workspace
+.vscode
