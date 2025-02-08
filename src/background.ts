@@ -12,8 +12,8 @@ chrome.storage.local.get({targetDomain: null}, (data) => {
       .then(res => res.json())
       .then(data => {
         chrome.storage.local.set({targetDomain: data.targetDomain});
-        chrome.storage.local.set({dispBanner: data.dispBanner == undefined || typeof(data.dispBanner) === 'boolean' ? true : data.dispBanner});
-        chrome.storage.local.set({postAlert: data.postAlert == undefined || typeof(data.postAlert) === 'boolean' ? true : data.postAlert});
+        chrome.storage.local.set({dispBanner: data.dispBanner == undefined || typeof(data.dispBanner) !== 'boolean' ? true : data.dispBanner});
+        chrome.storage.local.set({postAlert: data.postAlert == undefined || typeof(data.postAlert) !== 'boolean' ? true : data.postAlert});
       })
   }
 });

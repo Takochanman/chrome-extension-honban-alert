@@ -1,6 +1,7 @@
 import "@webcomponents/custom-elements/custom-elements.min.js";
 import $ from "jquery";
 
+// バナー構成部分
 const html = document.querySelector("html")!;
 customElements.define(
   'extension-honban-alert',
@@ -79,6 +80,7 @@ customElements.define(
 //   });
 // });
 
+// スクロール時のバナー表示制御
 const target = document.getElementsByTagName("extension-honban-alert");
 const handleScroll = (e: Event) => {
   const scrollTop = document.documentElement.scrollTop;
@@ -94,6 +96,7 @@ const handleScroll = (e: Event) => {
 }
 // window.addEventListener('scroll', handleScroll);
 
+// フォーム送信時のアラート表示
 const handleSubmit = (e: SubmitEvent) => {
   const formElement = e.target as HTMLFormElement;
   console.log(formElement.method);
@@ -108,6 +111,7 @@ const handleSubmit = (e: SubmitEvent) => {
 // window.addEventListener('submit', handleSubmit);
 // document.querySelector('form')?.addEventListener('submit', handleSubmit);
 
+// 本番環境アラート表示
 const honbanAlertHandler = () => {
   var targetDomainRegExp: RegExp[] = [];
   chrome.storage.local.get(null, data => {
@@ -143,6 +147,7 @@ const honbanAlertHandler = () => {
 }
 honbanAlertHandler();
 
+// メッセージ受信時の処理
 chrome.runtime.onMessage.addListener((req, options, sendResponse) => {
   if (req.target ==='honbanAlertHandler:contentScript') {
     var banner = document.getElementsByTagName("extension-honban-alert");
