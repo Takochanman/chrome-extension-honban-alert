@@ -35,6 +35,7 @@ const Popup = () => {
     })
   }, []);
 
+  // バナー表示の切り替え
   const changeDispBanner = () => {
     setIsDispBanner(!isDispBanner);
     chrome.storage.local.set({dispBanner: !isDispBanner});
@@ -55,6 +56,7 @@ const Popup = () => {
     }
   }
 
+  // POSTアラートの切り替え
   const changePostAlert = () => {
     setIsPostAlert(!isPostAlert);
     chrome.storage.local.set({ postAlert: !isPostAlert });
@@ -145,7 +147,7 @@ const Popup = () => {
           </Container>
           <Container display="flex" padding={0} alignItems="center">
             <FormLabel htmlFor="post-alert" mb="0">
-              POSTアラート
+              POSTアラート(Beta)
             </FormLabel>
             <Switch id="post-alert" colorScheme="orange" isChecked={isPostAlert} onChange={changePostAlert} />
           </Container>
@@ -202,18 +204,31 @@ const Popup = () => {
                 onClick={() => addButtonHandler()}
               />
             </VStack>
-            {isEditFlg ? (
+            <VStack>
+              {isEditFlg ? (
+                <Button
+                  colorScheme="orange"
+                  w="80px"
+                  display="block"
+                  marginLeft="auto"
+                  size='sm'
+                  onClick={() => saveButtonHandler()}
+                >
+                  保存
+                </Button>
+              ) : (<></>)}
               <Button
-                colorScheme="orange"
-                w="80px"
+                // colorScheme="gray"
+                bg="gray.300"
+                w="100px"
                 display="block"
                 marginLeft="auto"
                 size='sm'
-                onClick={() => saveButtonHandler()}
+                onClick={() => chrome.runtime.openOptionsPage()}
               >
-                保存
+                オプション
               </Button>
-            ) : (<></>)}
+            </VStack>
           </Container>
         </VStack>
       </Container>
