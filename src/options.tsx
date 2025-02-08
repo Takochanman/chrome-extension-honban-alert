@@ -1,7 +1,6 @@
 import { AttachmentIcon, CheckIcon, DownloadIcon } from "@chakra-ui/icons";
 import { Box, Button, ChakraProvider, Container, Heading, HStack, StackDivider, useToast, VisuallyHiddenInput, VStack } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 
 type JsonData = {
@@ -21,6 +20,7 @@ const Options = () => {
     fileInputRef.current?.click();
   };
 
+  // ファイル選択時の処理
   const changeFile = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -40,6 +40,7 @@ const Options = () => {
     }
   };
 
+  // JSON形式のバリデーション
   const validateJson = (data: any): data is JsonData => {
     return (
       Array.isArray(data.targetDomain) &&
@@ -49,6 +50,7 @@ const Options = () => {
     );
   };
 
+  // インポートボタンクリック時の処理
   const importData = () => {
     if (!file) {
       toast({
@@ -100,6 +102,7 @@ const Options = () => {
     reader.readAsText(file);
   };
 
+  // エクスポートボタンクリック時の処理
   const exportData = () => {
     chrome.storage.local.get(["targetDomain", "dispBanner", "postAlert"], (data) => {
       const jsonData = {
