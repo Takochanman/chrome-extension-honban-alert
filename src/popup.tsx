@@ -1,4 +1,4 @@
-import { ChakraProvider, Box, FormLabel, Switch, Heading, Button, VStack, Container, StackDivider, Input, useToast } from "@chakra-ui/react";
+import { ChakraProvider, Box, FormLabel, Switch, Heading, Button, VStack, Container, StackDivider, Input, useToast, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, useDisclosure } from "@chakra-ui/react";
 import { AddIcon, EditIcon, CloseIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
@@ -13,6 +13,9 @@ const Popup = () => {
   const [isEditFlg, setIsEditFlg] = useState<boolean>(false);
   const [isDispBanner, setIsDispBanner] = useState<boolean>(false);
   const [isPostAlert, setIsPostAlert] = useState<boolean>(false);
+  const [isBlockRequest, setIsBlockRequest] = useState<boolean>(false);
+  const {isOpen, onOpen, onClose} = useDisclosure();
+  const cancelRef = React.useRef<HTMLButtonElement>(null);
   const toast = useToast();
 
   var url: string | undefined;
@@ -31,8 +34,15 @@ const Popup = () => {
         setTargetDomainList(newTargetDomainList);
         setIsDispBanner(data.dispBanner);
         setIsPostAlert(data.postAlert);
+        setIsBlockRequest(data.blockRequest);
       }
-    })
+    });
+    chrome.runtime.onMessage.addListener((message) => {
+      if (message.action === "openPopup") {
+        // ポップアップを表示する処理
+        onOpen();
+      }
+    });
   }, []);
 
   // バナー表示の切り替え
@@ -43,7 +53,7 @@ const Popup = () => {
       title: !isDispBanner ? 'バナー表示を有効にしました。' : 'バナー表示を無効にしました。',
       description: "画面に反映されない場合はページを更新してください。",
       status: "success",
-      duration: 9000,
+      duration: 3000,
       isClosable: true,
       containerStyle: {maxWidth: '100px'}
     });
@@ -56,6 +66,19 @@ const Popup = () => {
     }
   }
 
+  // リクエストブロックの切り替え
+  const changeBlockRequest = () => {
+    setIsBlockRequest(!isBlockRequest);
+    chrome.storage.local.set({ blockRequest: !isBlockRequest });
+    toast({
+      title: !isBlockRequest ? 'リクエストブロックを有効にしました。' : 'リクエストブロックを無効にしました。',
+      description: "画面に反映されない場合はページを更新してください。",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
   // POSTアラートの切り替え
   const changePostAlert = () => {
     setIsPostAlert(!isPostAlert);
@@ -64,7 +87,7 @@ const Popup = () => {
       title: !isPostAlert ? 'POSTアラートを有効にしました。' : 'POSTアラートを無効にしました。',
       description: "画面に反映されない場合はページを更新してください。",
       status: "success",
-      duration: 9000,
+      duration: 3000,
       isClosable: true,
     });
     if (url != undefined) {
@@ -143,13 +166,34 @@ const Popup = () => {
             <FormLabel htmlFor="disp-banner" mb="0">
               バナー表示
             </FormLabel>
-            <Switch id="disp-banner" colorScheme="orange" isChecked={isDispBanner} onChange={changeDispBanner} />
+            <Switch
+              id="disp-banner"
+              colorScheme="orange"
+              isChecked={isDispBanner}
+              onChange={changeDispBanner}
+            />
+          </Container>
+          <Container display="flex" padding={0} alignItems="center">
+            <FormLabel htmlFor="block-request" mb="0">
+              リクエストブロック
+            </FormLabel>
+            <Switch
+              id="block-request"
+              colorScheme="orange"
+              isChecked={isBlockRequest}
+              onChange={changeBlockRequest}
+            />
           </Container>
           <Container display="flex" padding={0} alignItems="center">
             <FormLabel htmlFor="post-alert" mb="0">
               POSTアラート(Beta)
             </FormLabel>
-            <Switch id="post-alert" colorScheme="orange" isChecked={isPostAlert} onChange={changePostAlert} />
+            <Switch
+              id="post-alert"
+              colorScheme="orange"
+              isChecked={isPostAlert}
+              onChange={changePostAlert}
+            />
           </Container>
           <Container padding={0}>
             <FormLabel htmlFor="target-domain" mb="0">
@@ -232,16 +276,33 @@ const Popup = () => {
           </Container>
         </VStack>
       </Container>
+      {/* アラートモーダル */}
+      <AlertDialog
+        motionPreset="slideInBottom"
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isOpen={isOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+
+        <AlertDialogContent>
+          <AlertDialogHeader>本番環境検知</AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody>
+            本番環境へのリクエストを検知しました。操作を中止してください。
+          </AlertDialogBody>
+          <AlertDialogFooter>
+            <Button colorScheme="red" ref={cancelRef} onClick={onClose}>
+              OK
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Box>
   );
 };
 
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <Popup />
-//   </React.StrictMode>,
-//   document.getElementById("root")
-// );
 const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(

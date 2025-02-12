@@ -6,6 +6,7 @@ import { createRoot } from "react-dom/client";
 type JsonData = {
   targetDomain: string[];
   dispBanner: boolean;
+  blockRequest: boolean;
   postAlert: boolean;
 };
 
@@ -79,6 +80,7 @@ const Options = () => {
         }
         chrome.storage.local.set({targetDomain: jsonData.targetDomain});
         chrome.storage.local.set({dispBanner: jsonData.dispBanner == undefined || typeof(jsonData.dispBanner) !== 'boolean' ? true : jsonData.dispBanner});
+        chrome.storage.local.set({blockRequest: jsonData.blockRequest == undefined || typeof(jsonData.blockRequest) !== 'boolean' ? true : jsonData.blockRequest});
         chrome.storage.local.set({postAlert: jsonData.postAlert == undefined || typeof(jsonData.postAlert) !== 'boolean' ? true : jsonData.postAlert});
         toast({
           title: "正しくインポートされました。",
@@ -108,6 +110,7 @@ const Options = () => {
       const jsonData = {
         targetDomain: data.targetDomain || [],
         dispBanner: data.dispBanner ?? true,
+        blockRequest: data.blockRequest ?? true,
         postAlert: data.postAlert?? true
       };
 
