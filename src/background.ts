@@ -85,10 +85,13 @@ chrome.webRequest.onErrorOccurred.addListener(
   (details) => {
     if (details.error === 'net::ERR_BLOCKED_BY_CLIENT') {
       chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        chrome.action.openPopup();
-        setTimeout(() => {
-          chrome.runtime.sendMessage({ action: 'openPopup' });
-        }, 500); // 少し遅延させてポップアップが開かれるのを待つ
+        chrome.action.openPopup()
+        .then(() => {
+          setTimeout(() => {
+            chrome.runtime.sendMessage({ action: 'openPopup' }).catch(() => {});
+          }, 300); // 少し遅延させてポップアップが開かれるのを待つ
+        })
+        .catch(() => {});
       });
     }
   },
