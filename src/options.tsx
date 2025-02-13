@@ -106,7 +106,7 @@ const Options = () => {
 
   // エクスポートボタンクリック時の処理
   const exportData = () => {
-    chrome.storage.local.get(["targetDomain", "dispBanner", "postAlert"], (data) => {
+    chrome.storage.local.get(["targetDomain", "dispBanner", "blockRequest", "postAlert"], (data) => {
       const jsonData = {
         targetDomain: data.targetDomain || [],
         dispBanner: data.dispBanner ?? true,
