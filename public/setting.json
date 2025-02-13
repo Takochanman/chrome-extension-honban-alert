@@ -1,8 +1,9 @@
 {
   "targetDomain": [
-    "google.com",
-    "github.com"
+    "^example.com$",
+    "example2.com"
   ],
   "dispBanner": true,
-  "postAlert": true
+  "blockRequest": false,
+  "postAlert": false
 }

@@ -34,12 +34,18 @@ chrome.runtime.onMessage.addListener((req) => {
 chrome.storage.onChanged.addListener(async (changes, namespace) => {
   if (namespace === 'local') {
     if (changes.targetDomain) {
-      // リクエストブロックルールを更新
-      enableBlockRequest(changes.targetDomain.newValue);
+      chrome.storage.local.get(['blockRequest'], (data) => {
+        // リクエストブロックが有効な場合のみ更新
+        if (data.blockRequest) {
+          // リクエストブロックルールを更新
+          enableBlockRequest(changes.targetDomain.newValue);
+        }
+      });
     } else if (changes.blockRequest) {
       if (changes.blockRequest.newValue) {
         // ローカルストレージから対象ドメインを取得
         chrome.storage.local.get(['targetDomain'], (data) => {
+          // リクエストブロック有効化
           enableBlockRequest(data.targetDomain);
         });
       } else {
