@@ -97,23 +97,26 @@ chrome.webRequest.onErrorOccurred.addListener(
       targetDomain.forEach(d => {
         targetDomainRegExp.push(new RegExp(d));
       });
+      // 対象ドメイン以外は処理しない
       const uri = new URL(details.url);
       const isTargetDomain = targetDomainRegExp.some(r => r.test(uri.hostname));
       if (!isTargetDomain) return;
+
+      // エラー判定
+      if (details.error !== 'net::ERR_BLOCKED_BY_CLIENT') return;
+
+      // ポップアップを開きメッセージを送信
+      chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        chrome.action.openPopup()
+        .then(() => {
+          setTimeout(() => {
+            chrome.runtime.sendMessage({ action: 'openPopup' }).catch(() => {});
+          }, 300); // 少し遅延させてポップアップが開かれるのを待つ
+        })
+        .catch(() => {});
+      });
     });
 
-    // エラー判定
-    if (details.error !== 'net::ERR_BLOCKED_BY_CLIENT') return;
-
-    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-      chrome.action.openPopup()
-      .then(() => {
-        setTimeout(() => {
-          chrome.runtime.sendMessage({ action: 'openPopup' }).catch(() => {});
-        }, 300); // 少し遅延させてポップアップが開かれるのを待つ
-      })
-      .catch(() => {});
-    });
   },
   { urls: ['<all_urls>'] }
 );
