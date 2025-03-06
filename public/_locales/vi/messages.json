@@ -1,0 +1,104 @@
+{
+  "change_setting_disp_banner_toast_title_on": {
+    "message": "Đã bật hiển thị biểu ngữ."
+  },
+  "change_setting_disp_banner_toast_title_off": {
+    "message": "Đã tắt hiển thị biểu ngữ."
+  },
+  "change_setting_block_request_toast_title_on": {
+    "message": "Đã bật chặn yêu cầu."
+  },
+  "change_setting_block_request_toast_title_off": {
+    "message": "Đã tắt chặn yêu cầu."
+  },
+  "change_setting_post_alert_toast_title_on": {
+    "message": "Đã bật cảnh báo POST."
+  },
+  "change_setting_post_alert_toast_title_off": {
+    "message": "Đã tắt cảnh báo POST."
+  },
+  "change_setting_domain_toast_title": {
+    "message": "Đã cập nhật miền mục tiêu."
+  },
+  "change_setting_toast_description": {
+    "message": "Nếu thay đổi không được hiển thị, vui lòng làm mới trang."
+  },
+  "popup_title": {
+    "message": "Honban Alert"
+  },
+  "popup_setting_title": {
+    "message": "Cài đặt"
+  },
+  "popup_setting_disp_banner_title": {
+    "message": "Hiển thị Biểu ngữ"
+  },
+  "popup_setting_block_request_title": {
+    "message": "Chặn Yêu cầu"
+  },
+  "popup_setting_post_alert_title": {
+    "message": "Cảnh báo POST (Beta)"
+  },
+  "popup_setting_target_domain_title": {
+    "message": "Miền Mục tiêu"
+  },
+  "popup_setting_save_button": {
+    "message": "Lưu"
+  },
+  "popup_option_button": {
+    "message": "Tùy chọn"
+  },
+  "popup_blocked_alert_modal_title": {
+    "message": "Phát hiện Môi trường Sản xuất"
+  },
+  "popup_blocked_alert_modal_message": {
+    "message": "Đã phát hiện yêu cầu đến môi trường sản xuất. Vui lòng dừng thao tác."
+  },
+  "popup_blocked_alert_modal_close_button": {
+    "message": "Đóng"
+  },
+  "import_setting_type_error_title": {
+    "message": "Định dạng tệp không hợp lệ."
+  },
+  "import_setting_type_error_message": {
+    "message": "Vui lòng chọn tệp JSON."
+  },
+  "import_setting_select_error_title": {
+    "message": "Chưa chọn tệp."
+  },
+  "import_setting_format_error_message": {
+    "message": "Định dạng JSON không hợp lệ."
+  },
+  "import_setting_success_title": {
+    "message": "Đã nhập cài đặt."
+  },
+  "import_setting_success_message": {
+    "message": "Nếu thay đổi không được hiển thị, vui lòng làm mới trang."
+  },
+  "export_setting_success_title": {
+    "message": "Đã xuất cài đặt."
+  },
+  "option_title": {
+    "message": "Honban Alert Cài đặt"
+  },
+  "option_import_title": {
+    "message": "Import"
+  },
+  "option_import_description": {
+    "message": "Nhập cài đặt từ tệp JSON."
+  },
+  "option_import_select_file_button": {
+    "message": "Chọn tệp"
+  },
+  "option_import_button": {
+    "message": "Nhập"
+  },
+  "option_export_title": {
+    "message": "Export"
+  },
+  "option_export_description": {
+    "message": "Xuất cài đặt hiện tại và tải xuống dưới dạng tệp JSON."
+  },
+  "option_export_button": {
+    "message": "Xuất"
+  }
+}

@@ -1,7 +1,8 @@
-import { ChakraProvider, Box, FormLabel, Switch, Heading, Button, VStack, Container, StackDivider, Input, useToast, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, useDisclosure } from "@chakra-ui/react";
+import { ChakraProvider, Box, FormLabel, Switch, Heading, Button, VStack, Container, StackDivider, Input, useToast, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, useDisclosure, Divider, Skeleton } from "@chakra-ui/react";
 import { AddIcon, EditIcon, CloseIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
+import useI18n from "./useI18n";
 
 interface TargetDomain {
   targetDomain: string,
@@ -17,6 +18,7 @@ const Popup = () => {
   const {isOpen, onOpen, onClose} = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
   const toast = useToast();
+  const message = useI18n();
 
   var url: string | undefined;
   chrome.tabs.query({ active: true, currentWindow: true }, (e) => {
@@ -37,8 +39,8 @@ const Popup = () => {
         setIsBlockRequest(data.blockRequest);
       }
     });
-    chrome.runtime.onMessage.addListener((message) => {
-      if (message.action === "openPopup") {
+    chrome.runtime.onMessage.addListener((msg) => {
+      if (msg.action === "openPopup") {
         // ポップアップを表示する処理
         onOpen();
       }
@@ -50,8 +52,8 @@ const Popup = () => {
     setIsDispBanner(!isDispBanner);
     chrome.storage.local.set({dispBanner: !isDispBanner});
     toast({
-      title: !isDispBanner ? 'バナー表示を有効にしました。' : 'バナー表示を無効にしました。',
-      description: "画面に反映されない場合はページを更新してください。",
+      title: !isDispBanner ? message("change_setting_disp_banner_toast_title_on") : message("change_setting_disp_banner_toast_title_off"),
+      description: message("change_setting_toast_description"),
       status: "success",
       duration: 3000,
       isClosable: true,
@@ -71,8 +73,8 @@ const Popup = () => {
     setIsBlockRequest(!isBlockRequest);
     chrome.storage.local.set({ blockRequest: !isBlockRequest });
     toast({
-      title: !isBlockRequest ? 'リクエストブロックを有効にしました。' : 'リクエストブロックを無効にしました。',
-      description: "画面に反映されない場合はページを更新してください。",
+      title: !isBlockRequest ? message("change_setting_block_request_toast_title_on") : message("change_setting_block_request_toast_title_off"),
+      description: message("change_setting_toast_description"),
       status: "success",
       duration: 3000,
       isClosable: true,
@@ -84,8 +86,8 @@ const Popup = () => {
     setIsPostAlert(!isPostAlert);
     chrome.storage.local.set({ postAlert: !isPostAlert });
     toast({
-      title: !isPostAlert ? 'POSTアラートを有効にしました。' : 'POSTアラートを無効にしました。',
-      description: "画面に反映されない場合はページを更新してください。",
+      title: !isPostAlert ? message("change_setting_post_alert_toast_title_on") : message("change_setting_post_alert_toast_title_off"),
+      description: message("change_setting_toast_description"),
       status: "success",
       duration: 3000,
       isClosable: true,
@@ -135,8 +137,8 @@ const Popup = () => {
     setTargetDomainList(newDomainList);
     setIsEditFlg(false);
     toast({
-      title: "対象ドメインを更新しました。",
-      description: "画面に反映されない場合はページを更新してください。",
+      title: message("change_setting_domain_toast_title"),
+      description: message("change_setting_toast_description"),
       status: "success",
       duration: 9000,
       isClosable: true,
@@ -151,10 +153,12 @@ const Popup = () => {
   }
   return (
     <Box w="300px" h="500px" padding="15px" overflow="hidden scroll">
-      <Heading size="md">本番環境アラート</Heading>
+      {/* 本番環境アラート */}
+      <Heading size="md">{message("popup_title")}</Heading>
       <Container mt="20px" mb="20px">
         <Heading as="h2" size="sm">
-          設定
+          {/* 設定 */}
+          {message("popup_setting_title")}
         </Heading>
         <VStack
           padding={0}
@@ -164,7 +168,8 @@ const Popup = () => {
         >
           <Container display="flex" padding={0} alignItems="center">
             <FormLabel htmlFor="disp-banner" mb="0">
-              バナー表示
+              {/* バナー表示 */}
+              {message("popup_setting_disp_banner_title")}
             </FormLabel>
             <Switch
               id="disp-banner"
@@ -175,7 +180,8 @@ const Popup = () => {
           </Container>
           <Container display="flex" padding={0} alignItems="center">
             <FormLabel htmlFor="block-request" mb="0">
-              リクエストブロック
+              {/* リクエストブロック */}
+              {message("popup_setting_block_request_title")}
             </FormLabel>
             <Switch
               id="block-request"
@@ -186,7 +192,8 @@ const Popup = () => {
           </Container>
           <Container display="flex" padding={0} alignItems="center">
             <FormLabel htmlFor="post-alert" mb="0">
-              POSTアラート(Beta)
+              {/* POSTアラート */}
+              {message("popup_setting_post_alert_title")}
             </FormLabel>
             <Switch
               id="post-alert"
@@ -197,7 +204,8 @@ const Popup = () => {
           </Container>
           <Container padding={0}>
             <FormLabel htmlFor="target-domain" mb="0">
-              対象ドメイン
+              {/* 対象ドメイン */}
+              {message("popup_setting_target_domain_title")}
             </FormLabel>
             <VStack
               align="stretch"
@@ -249,32 +257,41 @@ const Popup = () => {
               />
             </VStack>
             <VStack>
-              {isEditFlg ? (
+              {isEditFlg && (
                 <Button
                   colorScheme="orange"
                   w="80px"
                   display="block"
                   marginLeft="auto"
-                  size='sm'
+                  size="sm"
                   onClick={() => saveButtonHandler()}
                 >
-                  保存
+                  {/* 保存 */}
+                  {message("popup_setting_save_button")}
                 </Button>
-              ) : (<></>)}
-              <Button
-                // colorScheme="gray"
-                bg="gray.300"
-                w="100px"
-                display="block"
-                marginLeft="auto"
-                size='sm'
-                onClick={() => chrome.runtime.openOptionsPage()}
-              >
-                オプション
-              </Button>
+              )}
             </VStack>
           </Container>
         </VStack>
+        <Divider
+          opacity={1}
+          borderBottomWidth="1px"
+          borderColor="gray.200"
+          mt={3}
+          mb={3}
+        />
+        <Button
+          // colorScheme="gray"
+          bg="gray.300"
+          w="100px"
+          display="block"
+          marginLeft="auto"
+          size="sm"
+          onClick={() => chrome.runtime.openOptionsPage()}
+        >
+          {/* オプション */}
+          {message("popup_option_button")}
+        </Button>
       </Container>
       {/* アラートモーダル */}
       <AlertDialog
@@ -286,15 +303,17 @@ const Popup = () => {
       >
         <AlertDialogOverlay />
 
-        <AlertDialogContent>
-          <AlertDialogHeader>本番環境検知</AlertDialogHeader>
+        <AlertDialogContent w="90%">
+          <AlertDialogHeader>
+            {message("popup_blocked_alert_modal_title")}
+          </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>
-            本番環境へのリクエストを検知しました。操作を中止してください。
+            {message("popup_blocked_alert_modal_message")}
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button colorScheme="red" ref={cancelRef} onClick={onClose}>
-              OK
+              {message("popup_blocked_alert_modal_close_button")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

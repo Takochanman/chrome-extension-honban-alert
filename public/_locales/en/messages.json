@@ -1,0 +1,104 @@
+{
+  "change_setting_disp_banner_toast_title_on": {
+    "message": "Banner display enabled."
+  },
+  "change_setting_disp_banner_toast_title_off": {
+    "message": "Banner display disabled."
+  },
+  "change_setting_block_request_toast_title_on": {
+    "message": "Request blocking enabled."
+  },
+  "change_setting_block_request_toast_title_off": {
+    "message": "Request blocking disabled."
+  },
+  "change_setting_post_alert_toast_title_on": {
+    "message": "POST alert enabled."
+  },
+  "change_setting_post_alert_setting_toast_off": {
+    "message": "POST alert disabled."
+  },
+  "change_setting_domain_toast_title": {
+    "message": "Target domain updated."
+  },
+  "change_setting_toast_description": {
+    "message": "If changes are not reflected, please refresh the page."
+  },
+  "popup_title": {
+    "message": "Production Environment Alert"
+  },
+  "popup_setting_title": {
+    "message": "Settings"
+  },
+  "popup_setting_disp_banner_title": {
+    "message": "Banner Display"
+  },
+  "popup_setting_block_request_title": {
+    "message": "Request Blocking"
+  },
+  "popup_setting_post_alert_title": {
+    "message": "POST Alert (Beta)"
+  },
+  "popup_setting_target_domain_title": {
+    "message": "Target Domain"
+  },
+  "popup_setting_save_button": {
+    "message": "Save"
+  },
+  "popup_option_button": {
+    "message": "Options"
+  },
+  "popup_blocked_alert_modal_title": {
+    "message": "Production Environment Detection"
+  },
+  "popup_blocked_alert_modal_message": {
+    "message": "A request to the production environment was detected. Please stop the operation."
+  },
+  "popup_blocked_alert_modal_close_button": {
+    "message": "Close"
+  },
+  "import_setting_type_error_title": {
+    "message": "Invalid file format."
+  },
+  "import_setting_type_error_message": {
+    "message": "Please select a JSON file."
+  },
+  "import_setting_select_error_title": {
+    "message": "No file selected."
+  },
+  "import_setting_format_error_message": {
+    "message": "Invalid JSON format."
+  },
+  "import_setting_success_title": {
+    "message": "Settings imported."
+  },
+  "import_setting_success_message": {
+    "message": "If changes are not reflected, please refresh the page."
+  },
+  "export_setting_success_title": {
+    "message": "Settings exported."
+  },
+  "option_title": {
+    "message": "Production Environment Alert Settings"
+  },
+  "option_import_title": {
+    "message": "Import"
+  },
+  "option_import_description": {
+    "message": "Import settings from a JSON file."
+  },
+  "option_import_select_file_button": {
+    "message": "Select File"
+  },
+  "option_import_button": {
+    "message": "Import"
+  },
+  "option_export_title": {
+    "message": "Export"
+  },
+  "option_export_description": {
+    "message": "Export current settings and download as a JSON file."
+  },
+  "option_export_button": {
+    "message": "Export"
+  }
+}

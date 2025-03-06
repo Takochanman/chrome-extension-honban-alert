@@ -1,0 +1,104 @@
+{
+  "change_setting_disp_banner_toast_title_on": {
+    "message": "バナー表示を有効にしました。"
+  },
+  "change_setting_disp_banner_toast_title_off": {
+    "message": "バナー表示を無効にしました。"
+  },
+  "change_setting_block_request_toast_title_on": {
+    "message": "リクエストブロックを有効にしました。"
+  },
+  "change_setting_block_request_toast_title_off": {
+    "message": "リクエストブロックを無効にしました。"
+  },
+  "change_setting_post_alert_toast_title_on": {
+    "message": "POSTアラートを有効にしました。"
+  },
+  "change_setting_post_alert_toast_title_off": {
+    "message": "POSTアラートを無効にしました。"
+  },
+  "change_setting_domain_toast_title": {
+    "message": "対象ドメインを更新しました。"
+  },
+  "change_setting_toast_description": {
+    "message": "画面に反映されない場合はページを更新してください。"
+  },
+  "popup_title": {
+    "message": "本番環境アラート"
+  },
+  "popup_setting_title": {
+    "message": "設定"
+  },
+  "popup_setting_disp_banner_title": {
+    "message": "バナー表示"
+  },
+  "popup_setting_block_request_title": {
+    "message": "リクエストブロック"
+  },
+  "popup_setting_post_alert_title": {
+    "message": "POSTアラート(Beta)"
+  },
+  "popup_setting_target_domain_title": {
+    "message": "対象ドメイン"
+  },
+  "popup_setting_save_button": {
+    "message": "保存"
+  },
+  "popup_option_button": {
+    "message": "オプション"
+  },
+  "popup_blocked_alert_modal_title": {
+    "message": "本番環境検知"
+  },
+  "popup_blocked_alert_modal_message": {
+    "message": "本番環境へのリクエストを検知しました。操作を中止してください。"
+  },
+  "popup_blocked_alert_modal_close_button": {
+    "message": "閉じる"
+  },
+  "import_setting_type_error_title": {
+    "message": "ファイルの形式が不正です。"
+  },
+  "import_setting_type_error_message": {
+    "message": "JSONファイルを選択してください。"
+  },
+  "import_setting_select_error_title": {
+    "message": "ファイルが選択されていません。"
+  },
+  "import_setting_format_error_message": {
+    "message": "JSONの形式が不正です。"
+  },
+  "import_setting_success_title": {
+    "message": "設定をインポートしました。"
+  },
+  "import_setting_success_message": {
+    "message": "画面に反映されない場合はページを更新してください。"
+  },
+  "export_setting_success_title": {
+    "message": "設定をエクスポートしました。"
+  },
+  "option_title": {
+    "message": "本番環境アラート 設定"
+  },
+  "option_import_title": {
+    "message": "Import"
+  },
+  "option_import_description": {
+    "message": "JSON形式の設定ファイルをインポートします。"
+  },
+  "option_import_select_file_button": {
+    "message": "ファイル選択"
+  },
+  "option_import_button": {
+    "message": "インポート"
+  },
+  "option_export_title": {
+    "message": "Export"
+  },
+  "option_export_description": {
+    "message": "現在の設定をエクスポートし、JSONファイルとしてダウンロードします。"
+  },
+  "option_export_button": {
+    "message": "エクスポート"
+  }
+}
