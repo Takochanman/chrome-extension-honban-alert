@@ -35,8 +35,8 @@
   "popup_setting_block_request_title": {
     "message": "Request Blocking"
   },
-  "popup_setting_post_alert_title": {
-    "message": "POST Alert (Beta)"
+  "popup_setting_block_post_request_title": {
+    "message": "POST Blocking"
   },
   "popup_setting_target_domain_title": {
     "message": "Target Domain"
@@ -51,7 +51,10 @@
     "message": "Production Environment Detection"
   },
   "popup_blocked_alert_modal_message": {
-    "message": "A request to the production environment was detected. Please stop the operation."
+    "message": "A request to the production environment was detected, so the request was blocked. <br>Please stop the operation."
+  },
+  "popup_post_blocked_alert_modal_message": {
+    "message": "A POST request to the production environment was detected, so the request was blocked. <br> (If a POST request is executed asynchronously, it may be displayed even if you are not operating the screen.)"
   },
   "popup_blocked_alert_modal_close_button": {
     "message": "Close"

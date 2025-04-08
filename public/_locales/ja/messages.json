@@ -35,8 +35,8 @@
   "popup_setting_block_request_title": {
     "message": "リクエストブロック"
   },
-  "popup_setting_post_alert_title": {
-    "message": "POSTアラート(Beta)"
+  "popup_setting_block_post_request_title": {
+    "message": "POSTブロック"
   },
   "popup_setting_target_domain_title": {
     "message": "対象ドメイン"
@@ -51,7 +51,10 @@
     "message": "本番環境検知"
   },
   "popup_blocked_alert_modal_message": {
-    "message": "本番環境へのリクエストを検知しました。操作を中止してください。"
+    "message": "本番環境へのリクエストを検知したためリクエストを遮断しました。<br>操作を中止してください。"
+  },
+  "popup_post_blocked_alert_modal_message": {
+    "message": "本番環境へのPOSTリクエストを検知したためリクエストを遮断しました。<br>（非同期処理でPOSTリクエストが実行されている場合、画面操作をしていなくても表示されることがあります。）"
   },
   "popup_blocked_alert_modal_close_button": {
     "message": "閉じる"

@@ -15,6 +15,7 @@ const Popup = () => {
   const [isDispBanner, setIsDispBanner] = useState<boolean>(false);
   const [isPostAlert, setIsPostAlert] = useState<boolean>(false);
   const [isBlockRequest, setIsBlockRequest] = useState<boolean>(false);
+  const [blockPopupType, setBlockPopupType] = useState<string>("");
   const {isOpen, onOpen, onClose} = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
   const toast = useToast();
@@ -40,8 +41,13 @@ const Popup = () => {
       }
     });
     chrome.runtime.onMessage.addListener((msg) => {
-      if (msg.action === "openPopup") {
+      if (msg.action === "openPopup:blockRequest") {
         // ポップアップを表示する処理
+        setBlockPopupType("blockRequest");
+        onOpen();
+      } else if(msg.action === "openPopup:blockPostRequest") {
+        // ポップアップを表示する処理
+        setBlockPopupType("blockPostRequest");
         onOpen();
       }
     });
@@ -92,13 +98,6 @@ const Popup = () => {
       duration: 3000,
       isClosable: true,
     });
-    if (url != undefined) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id!, {
-          target: "honbanAlertHandler:contentScript",
-        });
-      });
-    }
   };
 
   const changeTextHandler = (text: string, index: number) => {
@@ -151,6 +150,17 @@ const Popup = () => {
       });
     }
   }
+
+  // <br> を JSX に変換する関数
+  const convertBrToJsx = (text: string) => {
+    return text.split("<br>").map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        {index !== text.split("<br>").length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+
   return (
     <Box w="300px" h="500px" padding="15px" overflow="hidden scroll">
       {/* 本番環境アラート */}
@@ -193,7 +203,7 @@ const Popup = () => {
           <Container display="flex" padding={0} alignItems="center">
             <FormLabel htmlFor="post-alert" mb="0">
               {/* POSTアラート */}
-              {message("popup_setting_post_alert_title")}
+              {message("popup_setting_block_post_request_title")}
             </FormLabel>
             <Switch
               id="post-alert"
@@ -309,7 +319,10 @@ const Popup = () => {
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>
-            {message("popup_blocked_alert_modal_message")}
+            {blockPopupType === "blockRequest" &&
+              convertBrToJsx(message("popup_blocked_alert_modal_message"))}
+            {blockPopupType === "blockPostRequest" &&
+              convertBrToJsx(message("popup_post_blocked_alert_modal_message"))}
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button colorScheme="red" ref={cancelRef} onClick={onClose}>

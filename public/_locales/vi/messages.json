@@ -35,8 +35,8 @@
   "popup_setting_block_request_title": {
     "message": "Chặn Yêu cầu"
   },
-  "popup_setting_post_alert_title": {
-    "message": "Cảnh báo POST (Beta)"
+  "popup_setting_block_post_request_title": {
+    "message": "Chặn POST"
   },
   "popup_setting_target_domain_title": {
     "message": "Miền Mục tiêu"
@@ -51,7 +51,10 @@
     "message": "Phát hiện Môi trường Sản xuất"
   },
   "popup_blocked_alert_modal_message": {
-    "message": "Đã phát hiện yêu cầu đến môi trường sản xuất. Vui lòng dừng thao tác."
+    "message": "Đã phát hiện yêu cầu đến môi trường sản xuất, vì vậy yêu cầu đã bị chặn. <br>Vui lòng dừng hoạt động."
+  },
+  "popup_post_blocked_alert_modal_message": {
+    "message": "Đã phát hiện yêu cầu đến môi trường sản xuất, vì vậy yêu cầu đã bị chặn. <br>(Nếu yêu cầu POST được thực hiện trong xử lý bất đồng bộ, thông báo này có thể hiển thị ngay cả khi không thao tác trên màn hình.)"
   },
   "popup_blocked_alert_modal_close_button": {
     "message": "Đóng"
