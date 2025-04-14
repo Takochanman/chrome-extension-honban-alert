@@ -1,5 +1,5 @@
-import { ChakraProvider, Box, FormLabel, Switch, Heading, Button, VStack, Container, StackDivider, Input, useToast, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, useDisclosure, Divider, Skeleton } from "@chakra-ui/react";
-import { AddIcon, EditIcon, CloseIcon } from "@chakra-ui/icons";
+import { ChakraProvider, Box, FormLabel, Switch, Heading, Button, VStack, Container, StackDivider, Input, useToast, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, useDisclosure, Divider, Skeleton, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody, PopoverHeader, HStack } from "@chakra-ui/react";
+import { AddIcon, EditIcon, CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
 import useI18n from "./useI18n";
@@ -177,10 +177,29 @@ const Popup = () => {
           spacing={3}
         >
           <Container display="flex" padding={0} alignItems="center">
-            <FormLabel htmlFor="disp-banner" mb="0">
+            <FormLabel htmlFor="disp-banner" mb="0" mr="1">
               {/* バナー表示 */}
               {message("popup_setting_disp_banner_title")}
             </FormLabel>
+            <Popover isLazy>
+              <PopoverTrigger>
+                <InfoOutlineIcon
+                  boxSize={4}
+                  mr="3"
+                  cursor="pointer"
+                  verticalAlign="top"
+                />
+              </PopoverTrigger>
+              <PopoverContent maxW="230px">
+                <PopoverArrow />
+                <PopoverHeader fontWeight="semibold">
+                  {message("popup_setting_disp_banner_title")}
+                </PopoverHeader>
+                <PopoverBody>
+                  {convertBrToJsx(message("popover_disp_banner_body"))}
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
             <Switch
               id="disp-banner"
               colorScheme="orange"
@@ -189,10 +208,29 @@ const Popup = () => {
             />
           </Container>
           <Container display="flex" padding={0} alignItems="center">
-            <FormLabel htmlFor="block-request" mb="0">
+            <FormLabel htmlFor="block-request" mb="0" mr="1">
               {/* リクエストブロック */}
               {message("popup_setting_block_request_title")}
             </FormLabel>
+            <Popover isLazy>
+              <PopoverTrigger>
+                <InfoOutlineIcon
+                  boxSize={4}
+                  mr="3"
+                  cursor="pointer"
+                  verticalAlign="top"
+                />
+              </PopoverTrigger>
+              <PopoverContent maxW="230px">
+                <PopoverArrow />
+                <PopoverHeader fontWeight="semibold">
+                  {message("popup_setting_block_request_title")}
+                </PopoverHeader>
+                <PopoverBody>
+                  {convertBrToJsx(message("popover_block_request_body"))}
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
             <Switch
               id="block-request"
               colorScheme="orange"
@@ -201,10 +239,29 @@ const Popup = () => {
             />
           </Container>
           <Container display="flex" padding={0} alignItems="center">
-            <FormLabel htmlFor="post-alert" mb="0">
-              {/* POSTアラート */}
+            <FormLabel htmlFor="post-alert" mb="0" mr="1">
+              {/* POSTブロック */}
               {message("popup_setting_block_post_request_title")}
             </FormLabel>
+            <Popover isLazy>
+              <PopoverTrigger>
+                <InfoOutlineIcon
+                  boxSize={4}
+                  mr="3"
+                  cursor="pointer"
+                  verticalAlign="top"
+                />
+              </PopoverTrigger>
+              <PopoverContent maxW="230px">
+                <PopoverArrow />
+                <PopoverHeader fontWeight="semibold">
+                  {message("popup_setting_block_post_request_title")}
+                </PopoverHeader>
+                <PopoverBody>
+                  {convertBrToJsx(message("popover_block_post_request_body"))}
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
             <Switch
               id="post-alert"
               colorScheme="orange"
@@ -213,10 +270,39 @@ const Popup = () => {
             />
           </Container>
           <Container padding={0}>
-            <FormLabel htmlFor="target-domain" mb="0">
-              {/* 対象ドメイン */}
-              {message("popup_setting_target_domain_title")}
-            </FormLabel>
+            <HStack spacing={0}>
+              <FormLabel htmlFor="target-domain" mb="0" mr="1">
+                {/* 対象ドメイン */}
+                {message("popup_setting_target_domain_title")}
+              </FormLabel>
+              <Popover isLazy>
+                <PopoverTrigger>
+                  <InfoOutlineIcon
+                    boxSize={4}
+                    mr="3"
+                    cursor="pointer"
+                    verticalAlign="top"
+                  />
+                </PopoverTrigger>
+                <PopoverContent maxW="230px" maxH="230px">
+                  <PopoverArrow />
+                  <PopoverHeader fontWeight="semibold">
+                    {message("popup_setting_target_domain_title")}
+                  </PopoverHeader>
+                  <PopoverBody
+                    overflowY="auto"
+                    sx={{
+                      scrollbarWidth: "none",
+                      "&::-webkit-scrollbar": {
+                        display: "none",
+                      },
+                    }}
+                  >
+                    {convertBrToJsx(message("popover_target_domain_body"))}
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            </HStack>
             <VStack
               align="stretch"
               pl="5px"

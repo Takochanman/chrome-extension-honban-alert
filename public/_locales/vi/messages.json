@@ -59,6 +59,18 @@
   "popup_blocked_alert_modal_close_button": {
     "message": "Đóng"
   },
+  "popover_disp_banner_body": {
+    "message": "Hiển thị một biểu ngữ cảnh báo trên trang web thuộc miền đã chỉ định.<br>Mặc dù vẫn có thể thao tác trên màn hình khi biểu ngữ được hiển thị, nhưng trong trường hợp cần kiểm tra thiết kế trên môi trường thực tế, bạn nên tắt chức năng này để tránh làm hỏng bố cục thiết kế."
+  },
+  "popover_block_request_body": {
+    "message": "Chặn các yêu cầu đến miền đã chỉ định và ngăn chặn các yêu cầu đến máy chủ từ trước.<br>Toàn bộ các yêu cầu, bao gồm cả các yêu cầu thực thi bất đồng bộ như Ajax, đều sẽ bị chặn."
+  },
+  "popover_block_post_request_body": {
+    "message": "Chặn các yêu cầu POST đến miền đã chỉ định.<br>*Các yêu cầu thực thi bất đồng bộ như Ajax cũng sẽ bị chặn."
+  },
+  "popover_target_domain_body": {
+    "message": "Tên miền có thể được chỉ định bằng biểu thức chính quy (chỉ sử dụng ^ và $$).<br>Ví dụ hợp lệ）example.com<br>→ Áp dụng cho tất cả các tên miền bao gồm example.com, chẳng hạn như xxx.example.com.<br>Ví dụ hợp lệ）^example.com$$<br>→ Chỉ áp dụng cho example.com.<br>Ví dụ không hợp lệ）^https://example.com$$<br>→ Chỉ có thể chỉ định tên miền, không bao gồm giao thức."
+  },
   "import_setting_type_error_title": {
     "message": "Định dạng tệp không hợp lệ."
   },
