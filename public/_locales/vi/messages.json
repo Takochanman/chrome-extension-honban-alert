@@ -1,0 +1,119 @@
+{
+  "change_setting_disp_banner_toast_title_on": {
+    "message": "Đã bật hiển thị biểu ngữ."
+  },
+  "change_setting_disp_banner_toast_title_off": {
+    "message": "Đã tắt hiển thị biểu ngữ."
+  },
+  "change_setting_block_request_toast_title_on": {
+    "message": "Đã bật chặn yêu cầu."
+  },
+  "change_setting_block_request_toast_title_off": {
+    "message": "Đã tắt chặn yêu cầu."
+  },
+  "change_setting_post_alert_toast_title_on": {
+    "message": "Đã bật cảnh báo POST."
+  },
+  "change_setting_post_alert_toast_title_off": {
+    "message": "Đã tắt cảnh báo POST."
+  },
+  "change_setting_domain_toast_title": {
+    "message": "Đã cập nhật miền mục tiêu."
+  },
+  "change_setting_toast_description": {
+    "message": "Nếu thay đổi không được hiển thị, vui lòng làm mới trang."
+  },
+  "popup_title": {
+    "message": "Honban Alert"
+  },
+  "popup_setting_title": {
+    "message": "Cài đặt"
+  },
+  "popup_setting_disp_banner_title": {
+    "message": "Hiển thị Biểu ngữ"
+  },
+  "popup_setting_block_request_title": {
+    "message": "Chặn Yêu cầu"
+  },
+  "popup_setting_block_post_request_title": {
+    "message": "Chặn POST"
+  },
+  "popup_setting_target_domain_title": {
+    "message": "Miền Mục tiêu"
+  },
+  "popup_setting_save_button": {
+    "message": "Lưu"
+  },
+  "popup_option_button": {
+    "message": "Tùy chọn"
+  },
+  "popup_blocked_alert_modal_title": {
+    "message": "Phát hiện Môi trường Sản xuất"
+  },
+  "popup_blocked_alert_modal_message": {
+    "message": "Đã phát hiện yêu cầu đến môi trường sản xuất, vì vậy yêu cầu đã bị chặn. <br>Vui lòng dừng hoạt động."
+  },
+  "popup_post_blocked_alert_modal_message": {
+    "message": "Đã phát hiện yêu cầu đến môi trường sản xuất, vì vậy yêu cầu đã bị chặn. <br>(Nếu yêu cầu POST được thực hiện trong xử lý bất đồng bộ, thông báo này có thể hiển thị ngay cả khi không thao tác trên màn hình.)"
+  },
+  "popup_blocked_alert_modal_close_button": {
+    "message": "Đóng"
+  },
+  "popover_disp_banner_body": {
+    "message": "Hiển thị một biểu ngữ cảnh báo trên trang web thuộc miền đã chỉ định.<br>Mặc dù vẫn có thể thao tác trên màn hình khi biểu ngữ được hiển thị, nhưng trong trường hợp cần kiểm tra thiết kế trên môi trường thực tế, bạn nên tắt chức năng này để tránh làm hỏng bố cục thiết kế."
+  },
+  "popover_block_request_body": {
+    "message": "Chặn các yêu cầu đến miền đã chỉ định và ngăn chặn các yêu cầu đến máy chủ từ trước.<br>Toàn bộ các yêu cầu, bao gồm cả các yêu cầu thực thi bất đồng bộ như Ajax, đều sẽ bị chặn."
+  },
+  "popover_block_post_request_body": {
+    "message": "Chặn các yêu cầu POST đến miền đã chỉ định.<br>*Các yêu cầu thực thi bất đồng bộ như Ajax cũng sẽ bị chặn."
+  },
+  "popover_target_domain_body": {
+    "message": "Tên miền có thể được chỉ định bằng biểu thức chính quy (chỉ sử dụng ^ và $$).<br>Ví dụ hợp lệ）example.com<br>→ Áp dụng cho tất cả các tên miền bao gồm example.com, chẳng hạn như xxx.example.com.<br>Ví dụ hợp lệ）^example.com$$<br>→ Chỉ áp dụng cho example.com.<br>Ví dụ không hợp lệ）^https://example.com$$<br>→ Chỉ có thể chỉ định tên miền, không bao gồm giao thức."
+  },
+  "import_setting_type_error_title": {
+    "message": "Định dạng tệp không hợp lệ."
+  },
+  "import_setting_type_error_message": {
+    "message": "Vui lòng chọn tệp JSON."
+  },
+  "import_setting_select_error_title": {
+    "message": "Chưa chọn tệp."
+  },
+  "import_setting_format_error_message": {
+    "message": "Định dạng JSON không hợp lệ."
+  },
+  "import_setting_success_title": {
+    "message": "Đã nhập cài đặt."
+  },
+  "import_setting_success_message": {
+    "message": "Nếu thay đổi không được hiển thị, vui lòng làm mới trang."
+  },
+  "export_setting_success_title": {
+    "message": "Đã xuất cài đặt."
+  },
+  "option_title": {
+    "message": "Honban Alert Cài đặt"
+  },
+  "option_import_title": {
+    "message": "Import"
+  },
+  "option_import_description": {
+    "message": "Nhập cài đặt từ tệp JSON."
+  },
+  "option_import_select_file_button": {
+    "message": "Chọn tệp"
+  },
+  "option_import_button": {
+    "message": "Nhập"
+  },
+  "option_export_title": {
+    "message": "Export"
+  },
+  "option_export_description": {
+    "message": "Xuất cài đặt hiện tại và tải xuống dưới dạng tệp JSON."
+  },
+  "option_export_button": {
+    "message": "Xuất"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "change_setting_disp_banner_toast_title_on": {
+    "message": "Banner display enabled."
+  },
+  "change_setting_disp_banner_toast_title_off": {
+    "message": "Banner display disabled."
+  },
+  "change_setting_block_request_toast_title_on": {
+    "message": "Request blocking enabled."
+  },
+  "change_setting_block_request_toast_title_off": {
+    "message": "Request blocking disabled."
+  },
+  "change_setting_post_alert_toast_title_on": {
+    "message": "POST alert enabled."
+  },
+  "change_setting_post_alert_setting_toast_off": {
+    "message": "POST alert disabled."
+  },
+  "change_setting_domain_toast_title": {
+    "message": "Target domain updated."
+  },
+  "change_setting_toast_description": {
+    "message": "If changes are not reflected, please refresh the page."
+  },
+  "popup_title": {
+    "message": "Production Environment Alert"
+  },
+  "popup_setting_title": {
+    "message": "Settings"
+  },
+  "popup_setting_disp_banner_title": {
+    "message": "Banner Display"
+  },
+  "popup_setting_block_request_title": {
+    "message": "Request Blocking"
+  },
+  "popup_setting_block_post_request_title": {
+    "message": "POST Blocking"
+  },
+  "popup_setting_target_domain_title": {
+    "message": "Target Domain"
+  },
+  "popup_setting_save_button": {
+    "message": "Save"
+  },
+  "popup_option_button": {
+    "message": "Options"
+  },
+  "popup_blocked_alert_modal_title": {
+    "message": "Production Environment Detection"
+  },
+  "popup_blocked_alert_modal_message": {
+    "message": "A request to the production environment was detected, so the request was blocked. <br>Please stop the operation."
+  },
+  "popup_post_blocked_alert_modal_message": {
+    "message": "A POST request to the production environment was detected, so the request was blocked. <br> (If a POST request is executed asynchronously, it may be displayed even if you are not operating the screen.)"
+  },
+  "popup_blocked_alert_modal_close_button": {
+    "message": "Close"
+  },
+  "popover_disp_banner_body": {
+    "message": "An alert banner will be displayed on the website of the specified domain.<br>While it is still possible to operate the screen with the banner displayed, it is recommended to turn it off when checking the design in the production environment, to prevent any design breakage."
+  },
+  "popover_block_request_body": {
+    "message": "Blocks requests to the specified domain, preventing them from reaching the server.<br>All requests are blocked, including those executed asynchronously such as Ajax requests."
+  },
+  "popover_block_post_request_body": {
+    "message": "Blocks POST requests to the specified domain.<br>Asynchronous requests such as Ajax are also blocked."
+  },
+  "popover_target_domain_body": {
+    "message": "Domains can be specified using regular expressions (only ^ and $$ are allowed).<br>Valid example: example.com<br>→ Applies to all domains that include example.com, such as xxx.example.com.<br>Valid example: ^example.com$$<br>→ Applies only to example.com.<br>Invalid example: ^https://example.com$$<br>→ Only domains can be specified; protocols such as https:// are not allowed."
+  },
+  "import_setting_type_error_title": {
+    "message": "Invalid file format."
+  },
+  "import_setting_type_error_message": {
+    "message": "Please select a JSON file."
+  },
+  "import_setting_select_error_title": {
+    "message": "No file selected."
+  },
+  "import_setting_format_error_message": {
+    "message": "Invalid JSON format."
+  },
+  "import_setting_success_title": {
+    "message": "Settings imported."
+  },
+  "import_setting_success_message": {
+    "message": "If changes are not reflected, please refresh the page."
+  },
+  "export_setting_success_title": {
+    "message": "Settings exported."
+  },
+  "option_title": {
+    "message": "Production Environment Alert Settings"
+  },
+  "option_import_title": {
+    "message": "Import"
+  },
+  "option_import_description": {
+    "message": "Import settings from a JSON file."
+  },
+  "option_import_select_file_button": {
+    "message": "Select File"
+  },
+  "option_import_button": {
+    "message": "Import"
+  },
+  "option_export_title": {
+    "message": "Export"
+  },
+  "option_export_description": {
+    "message": "Export current settings and download as a JSON file."
+  },
+  "option_export_button": {
+    "message": "Export"
+  }
+}

@@ -2,6 +2,7 @@ import { AttachmentIcon, CheckIcon, DownloadIcon } from "@chakra-ui/icons";
 import { Box, Button, ChakraProvider, Container, Heading, HStack, StackDivider, useToast, VisuallyHiddenInput, VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
+import useI18n from "./useI18n";
 
 type JsonData = {
   targetDomain: string[];
@@ -14,6 +15,7 @@ const Options = () => {
   const [fileName, setFileName] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const message = useI18n();
 
   const toast = useToast();
 
@@ -30,8 +32,8 @@ const Options = () => {
         setFile(selectedFile);
       } else {
         toast({
-          title: "ファイルの形式が不正です。",
-          description: "JSONファイルを選択してください。",
+          title: message("import_setting_type_error_title"),
+          description: message("import_setting_type_error_description"),
           status: "error",
           duration: 3000,
           isClosable: true,
@@ -55,11 +57,11 @@ const Options = () => {
   const importData = () => {
     if (!file) {
       toast({
-        title: "ファイルが選択されていません。",
+        title: message("import_setting_select_error_title"),
         status: "error",
         duration: 3000,
         isClosable: true,
-        containerStyle: {maxWidth: '100px'}
+        containerStyle: { maxWidth: "100px" },
       });
       return;
     }
@@ -70,7 +72,7 @@ const Options = () => {
         const jsonData = JSON.parse(e.target?.result as string);
         if (!validateJson(jsonData)) {
           toast({
-            title: "JSONの形式が不正です。",
+            title: message("import_setting_format_error_message"),
             status: "error",
             duration: 3000,
             isClosable: true,
@@ -83,8 +85,8 @@ const Options = () => {
         chrome.storage.local.set({blockRequest: jsonData.blockRequest == undefined || typeof(jsonData.blockRequest) !== 'boolean' ? true : jsonData.blockRequest});
         chrome.storage.local.set({postAlert: jsonData.postAlert == undefined || typeof(jsonData.postAlert) !== 'boolean' ? true : jsonData.postAlert});
         toast({
-          title: "正しくインポートされました。",
-          description: "画面に反映されない場合はページを更新してください。",
+          title: message("import_setting_success_title"),
+          description: message("import_setting_success_message"),
           status: "success",
           duration: 3000,
           isClosable: true,
@@ -92,12 +94,12 @@ const Options = () => {
         });
       } catch (e: any) {
         toast({
-          title: "ファイルの形式が不正です。",
+          title: message("import_setting_type_error_title"),
           description: e.message,
           status: "error",
           duration: 3000,
           isClosable: true,
-          containerStyle: {maxWidth: '100px'}
+          containerStyle: { maxWidth: "100px"}
         });
       }
     };
@@ -125,7 +127,7 @@ const Options = () => {
       URL.revokeObjectURL(url);
 
       toast({
-        title: "正しくエクスポートされました。",
+        title: message("export_setting_success_title"),
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -136,7 +138,7 @@ const Options = () => {
 
   return (
     <Box h="500px" padding="15px">
-      <Heading size="md">本番環境アラート 設定</Heading>
+      <Heading size="md">{message("option_title")}</Heading>
       <Container mt="20px" mb="20px">
         <VStack
           padding={0}
@@ -146,11 +148,9 @@ const Options = () => {
         >
           <Box>
             <Heading as="h2" size="sm">
-              Import
+              {message("option_import_title")}
             </Heading>
-            <Box pt={3}>
-              JSON形式の設定ファイルをインポートします。
-            </Box>
+            <Box pt={3}>{message("option_import_description")}</Box>
             <HStack
               pt={3}
               align="start"
@@ -165,9 +165,14 @@ const Options = () => {
                   leftIcon={file ? <CheckIcon /> : <AttachmentIcon />}
                   onClick={chooseFileClick}
                 >
-                  ファイル選択
+                  {message("option_import_select_file_button")}
                 </Button>
-                <VisuallyHiddenInput type="file" ref={fileInputRef} onChange={changeFile} accept="application/json" />
+                <VisuallyHiddenInput
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={changeFile}
+                  accept="application/json"
+                />
                 {fileName && <Box>{fileName}</Box>}
               </Box>
               {file && (
@@ -177,17 +182,17 @@ const Options = () => {
                   size="sm"
                   onClick={importData}
                 >
-                  インポート
+                  {message("option_import_button")}
                 </Button>
               )}
             </HStack>
           </Box>
           <Box>
             <Heading as="h2" size="sm">
-              Export
+              {message("option_export_title")}
             </Heading>
             <Box pt={3}>
-              現在の設定をエクスポートし、JSONファイルとしてダウンロードします。
+              {message("option_export_description")}
             </Box>
             <VStack
               padding={0}
@@ -203,7 +208,7 @@ const Options = () => {
                 leftIcon={<DownloadIcon />}
                 onClick={exportData}
               >
-                エクスポート
+                {message("option_export_button")}
               </Button>
             </VStack>
           </Box>
