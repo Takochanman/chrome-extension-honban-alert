@@ -1,5 +1,5 @@
-import { ChakraProvider, Box, FormLabel, Switch, Heading, Button, VStack, Container, StackDivider, Input, useToast, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, useDisclosure, Divider, Skeleton } from "@chakra-ui/react";
-import { AddIcon, EditIcon, CloseIcon } from "@chakra-ui/icons";
+import { ChakraProvider, Box, FormLabel, Switch, Heading, Button, VStack, Container, StackDivider, Input, useToast, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, useDisclosure, Divider, Skeleton, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody, PopoverHeader, HStack } from "@chakra-ui/react";
+import { AddIcon, EditIcon, CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import { createRoot } from 'react-dom/client';
 import useI18n from "./useI18n";
@@ -15,6 +15,7 @@ const Popup = () => {
   const [isDispBanner, setIsDispBanner] = useState<boolean>(false);
   const [isPostAlert, setIsPostAlert] = useState<boolean>(false);
   const [isBlockRequest, setIsBlockRequest] = useState<boolean>(false);
+  const [blockPopupType, setBlockPopupType] = useState<string>("");
   const {isOpen, onOpen, onClose} = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
   const toast = useToast();
@@ -40,8 +41,13 @@ const Popup = () => {
       }
     });
     chrome.runtime.onMessage.addListener((msg) => {
-      if (msg.action === "openPopup") {
+      if (msg.action === "openPopup:blockRequest") {
         // ポップアップを表示する処理
+        setBlockPopupType("blockRequest");
+        onOpen();
+      } else if(msg.action === "openPopup:blockPostRequest") {
+        // ポップアップを表示する処理
+        setBlockPopupType("blockPostRequest");
         onOpen();
       }
     });
@@ -92,13 +98,6 @@ const Popup = () => {
       duration: 3000,
       isClosable: true,
     });
-    if (url != undefined) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id!, {
-          target: "honbanAlertHandler:contentScript",
-        });
-      });
-    }
   };
 
   const changeTextHandler = (text: string, index: number) => {
@@ -151,6 +150,17 @@ const Popup = () => {
       });
     }
   }
+
+  // <br> を JSX に変換する関数
+  const convertBrToJsx = (text: string) => {
+    return text.split("<br>").map((line, index) => (
+      <React.Fragment key={index}>
+        {line}
+        {index !== text.split("<br>").length - 1 && <br />}
+      </React.Fragment>
+    ));
+  };
+
   return (
     <Box w="300px" h="500px" padding="15px" overflow="hidden scroll">
       {/* 本番環境アラート */}
@@ -167,10 +177,29 @@ const Popup = () => {
           spacing={3}
         >
           <Container display="flex" padding={0} alignItems="center">
-            <FormLabel htmlFor="disp-banner" mb="0">
+            <FormLabel htmlFor="disp-banner" mb="0" mr="1">
               {/* バナー表示 */}
               {message("popup_setting_disp_banner_title")}
             </FormLabel>
+            <Popover isLazy>
+              <PopoverTrigger>
+                <InfoOutlineIcon
+                  boxSize={4}
+                  mr="3"
+                  cursor="pointer"
+                  verticalAlign="top"
+                />
+              </PopoverTrigger>
+              <PopoverContent maxW="230px">
+                <PopoverArrow />
+                <PopoverHeader fontWeight="semibold">
+                  {message("popup_setting_disp_banner_title")}
+                </PopoverHeader>
+                <PopoverBody>
+                  {convertBrToJsx(message("popover_disp_banner_body"))}
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
             <Switch
               id="disp-banner"
               colorScheme="orange"
@@ -179,10 +208,29 @@ const Popup = () => {
             />
           </Container>
           <Container display="flex" padding={0} alignItems="center">
-            <FormLabel htmlFor="block-request" mb="0">
+            <FormLabel htmlFor="block-request" mb="0" mr="1">
               {/* リクエストブロック */}
               {message("popup_setting_block_request_title")}
             </FormLabel>
+            <Popover isLazy>
+              <PopoverTrigger>
+                <InfoOutlineIcon
+                  boxSize={4}
+                  mr="3"
+                  cursor="pointer"
+                  verticalAlign="top"
+                />
+              </PopoverTrigger>
+              <PopoverContent maxW="230px">
+                <PopoverArrow />
+                <PopoverHeader fontWeight="semibold">
+                  {message("popup_setting_block_request_title")}
+                </PopoverHeader>
+                <PopoverBody>
+                  {convertBrToJsx(message("popover_block_request_body"))}
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
             <Switch
               id="block-request"
               colorScheme="orange"
@@ -191,10 +239,29 @@ const Popup = () => {
             />
           </Container>
           <Container display="flex" padding={0} alignItems="center">
-            <FormLabel htmlFor="post-alert" mb="0">
-              {/* POSTアラート */}
-              {message("popup_setting_post_alert_title")}
+            <FormLabel htmlFor="post-alert" mb="0" mr="1">
+              {/* POSTブロック */}
+              {message("popup_setting_block_post_request_title")}
             </FormLabel>
+            <Popover isLazy>
+              <PopoverTrigger>
+                <InfoOutlineIcon
+                  boxSize={4}
+                  mr="3"
+                  cursor="pointer"
+                  verticalAlign="top"
+                />
+              </PopoverTrigger>
+              <PopoverContent maxW="230px">
+                <PopoverArrow />
+                <PopoverHeader fontWeight="semibold">
+                  {message("popup_setting_block_post_request_title")}
+                </PopoverHeader>
+                <PopoverBody>
+                  {convertBrToJsx(message("popover_block_post_request_body"))}
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
             <Switch
               id="post-alert"
               colorScheme="orange"
@@ -203,10 +270,39 @@ const Popup = () => {
             />
           </Container>
           <Container padding={0}>
-            <FormLabel htmlFor="target-domain" mb="0">
-              {/* 対象ドメイン */}
-              {message("popup_setting_target_domain_title")}
-            </FormLabel>
+            <HStack spacing={0}>
+              <FormLabel htmlFor="target-domain" mb="0" mr="1">
+                {/* 対象ドメイン */}
+                {message("popup_setting_target_domain_title")}
+              </FormLabel>
+              <Popover isLazy>
+                <PopoverTrigger>
+                  <InfoOutlineIcon
+                    boxSize={4}
+                    mr="3"
+                    cursor="pointer"
+                    verticalAlign="top"
+                  />
+                </PopoverTrigger>
+                <PopoverContent maxW="230px" maxH="230px">
+                  <PopoverArrow />
+                  <PopoverHeader fontWeight="semibold">
+                    {message("popup_setting_target_domain_title")}
+                  </PopoverHeader>
+                  <PopoverBody
+                    overflowY="auto"
+                    sx={{
+                      scrollbarWidth: "none",
+                      "&::-webkit-scrollbar": {
+                        display: "none",
+                      },
+                    }}
+                  >
+                    {convertBrToJsx(message("popover_target_domain_body"))}
+                  </PopoverBody>
+                </PopoverContent>
+              </Popover>
+            </HStack>
             <VStack
               align="stretch"
               pl="5px"
@@ -309,7 +405,10 @@ const Popup = () => {
           </AlertDialogHeader>
           <AlertDialogCloseButton />
           <AlertDialogBody>
-            {message("popup_blocked_alert_modal_message")}
+            {blockPopupType === "blockRequest" &&
+              convertBrToJsx(message("popup_blocked_alert_modal_message"))}
+            {blockPopupType === "blockPostRequest" &&
+              convertBrToJsx(message("popup_post_blocked_alert_modal_message"))}
           </AlertDialogBody>
           <AlertDialogFooter>
             <Button colorScheme="red" ref={cancelRef} onClick={onClose}>

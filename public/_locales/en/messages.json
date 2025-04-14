@@ -35,8 +35,8 @@
   "popup_setting_block_request_title": {
     "message": "Request Blocking"
   },
-  "popup_setting_post_alert_title": {
-    "message": "POST Alert (Beta)"
+  "popup_setting_block_post_request_title": {
+    "message": "POST Blocking"
   },
   "popup_setting_target_domain_title": {
     "message": "Target Domain"
@@ -51,10 +51,25 @@
     "message": "Production Environment Detection"
   },
   "popup_blocked_alert_modal_message": {
-    "message": "A request to the production environment was detected. Please stop the operation."
+    "message": "A request to the production environment was detected, so the request was blocked. <br>Please stop the operation."
+  },
+  "popup_post_blocked_alert_modal_message": {
+    "message": "A POST request to the production environment was detected, so the request was blocked. <br> (If a POST request is executed asynchronously, it may be displayed even if you are not operating the screen.)"
   },
   "popup_blocked_alert_modal_close_button": {
     "message": "Close"
+  },
+  "popover_disp_banner_body": {
+    "message": "An alert banner will be displayed on the website of the specified domain.<br>While it is still possible to operate the screen with the banner displayed, it is recommended to turn it off when checking the design in the production environment, to prevent any design breakage."
+  },
+  "popover_block_request_body": {
+    "message": "Blocks requests to the specified domain, preventing them from reaching the server.<br>All requests are blocked, including those executed asynchronously such as Ajax requests."
+  },
+  "popover_block_post_request_body": {
+    "message": "Blocks POST requests to the specified domain.<br>Asynchronous requests such as Ajax are also blocked."
+  },
+  "popover_target_domain_body": {
+    "message": "Domains can be specified using regular expressions (only ^ and $$ are allowed).<br>Valid example: example.com<br>→ Applies to all domains that include example.com, such as xxx.example.com.<br>Valid example: ^example.com$$<br>→ Applies only to example.com.<br>Invalid example: ^https://example.com$$<br>→ Only domains can be specified; protocols such as https:// are not allowed."
   },
   "import_setting_type_error_title": {
     "message": "Invalid file format."

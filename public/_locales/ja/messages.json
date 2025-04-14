@@ -35,8 +35,8 @@
   "popup_setting_block_request_title": {
     "message": "リクエストブロック"
   },
-  "popup_setting_post_alert_title": {
-    "message": "POSTアラート(Beta)"
+  "popup_setting_block_post_request_title": {
+    "message": "POSTブロック"
   },
   "popup_setting_target_domain_title": {
     "message": "対象ドメイン"
@@ -51,10 +51,25 @@
     "message": "本番環境検知"
   },
   "popup_blocked_alert_modal_message": {
-    "message": "本番環境へのリクエストを検知しました。操作を中止してください。"
+    "message": "本番環境へのリクエストを検知したためリクエストを遮断しました。<br>操作を中止してください。"
+  },
+  "popup_post_blocked_alert_modal_message": {
+    "message": "本番環境へのPOSTリクエストを検知したためリクエストを遮断しました。<br>（非同期処理でPOSTリクエストが実行されている場合、画面操作をしていなくても表示されることがあります。）"
   },
   "popup_blocked_alert_modal_close_button": {
     "message": "閉じる"
+  },
+  "popover_disp_banner_body": {
+    "message": "指定したドメインのWebサイト上にアラートバナーを表示します。<br>バナー表示時も画面上の操作を行うことは可能ですが、本番環境下でデザインの確認を行う場合等では、デザイン崩れを防ぐためにOFFにすることをおすすめします。"
+  },
+  "popover_block_request_body": {
+    "message": "指定したドメインへのリクエストをブロックし、サーバーへのリクエストを未然に防ぎます。<br>Ajaxなどの非同期で実行されるリクエストを含む、全リクエストをブロックします。"
+  },
+  "popover_block_post_request_body": {
+    "message": "指定したドメインへのPOSTリクエストをブロックします。<br>※Ajaxなど非同期で実行されるリクエストもブロックされます。"
+  },
+  "popover_target_domain_body": {
+    "message": "ドメインは正規表現（^と$$のみ）で指定可能です。<br>OK例）example.com<br>→ xxx.example.comなど、example.comを含む全てのドメインに適用されます。<br>OK例）^example.com$$<br>→ example.comのみ適用されます。<br>NG例）^https://example.com$$<br>→ 指定できるのはドメインのみです。"
   },
   "import_setting_type_error_title": {
     "message": "ファイルの形式が不正です。"
