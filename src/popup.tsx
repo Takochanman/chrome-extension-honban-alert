@@ -45,10 +45,11 @@ interface TargetDomain {
 
 // Helper function: <br> を JSX に変換
 const convertBrToJsx = (text: string) => {
-  return text.split("<br>").map((line, index) => (
+  const lines = text.split("<br>");
+  return lines.map((line, index) => (
     <React.Fragment key={index}>
       {line}
-      {index !== text.split("<br>").length - 1 && <br />}
+      {index !== lines.length - 1 && <br />}
     </React.Fragment>
   ));
 };

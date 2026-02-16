@@ -89,9 +89,9 @@ const handleScroll = (e: Event) => {
 // フォーム送信時のアラート表示
 const handleSubmit = (e: SubmitEvent) => {
   const formElement = e.target as HTMLFormElement;
-  const method = formElement.method.toUpperCase();
+  const method = formElement.method;
 
-  if (method !== "GET") {
+  if (method !== "get") {
     const continueFlg = window.confirm(
       "本番環境へPOSTリクエストを実行しようとしています。\n続けますか？"
     );
