@@ -1,5 +1,16 @@
 import { AttachmentIcon, CheckIcon, DownloadIcon } from "@chakra-ui/icons";
-import { Box, Button, ChakraProvider, Container, Heading, HStack, StackDivider, useToast, VisuallyHiddenInput, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  ChakraProvider,
+  Container,
+  Heading,
+  HStack,
+  StackDivider,
+  useToast,
+  VisuallyHiddenInput,
+  VStack,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import useI18n from "./useI18n";
@@ -11,16 +22,38 @@ type JsonData = {
   postAlert: boolean;
 };
 
+// Default values for settings
+const DEFAULT_SETTINGS = {
+  dispBanner: true,
+  blockRequest: true,
+  postAlert: true,
+};
+
 const Options = () => {
   const [fileName, setFileName] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const message = useI18n();
-
   const toast = useToast();
 
   const chooseFileClick = () => {
     fileInputRef.current?.click();
+  };
+
+  // Helper function: トースト表示
+  const showToast = (
+    title: string,
+    status: "success" | "error",
+    description?: string
+  ) => {
+    toast({
+      title,
+      description,
+      status,
+      duration: 3000,
+      isClosable: true,
+      containerStyle: { maxWidth: "100px" },
+    });
   };
 
   // ファイル選択時の処理
@@ -31,14 +64,11 @@ const Options = () => {
         setFileName(selectedFile.name);
         setFile(selectedFile);
       } else {
-        toast({
-          title: message("import_setting_type_error_title"),
-          description: message("import_setting_type_error_description"),
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-          containerStyle: {maxWidth: '100px'}
-        });
+        showToast(
+          message("import_setting_type_error_title"),
+          "error",
+          message("import_setting_type_error_description")
+        );
       }
     }
   };
@@ -53,16 +83,30 @@ const Options = () => {
     );
   };
 
+  // Helper function: 設定を保存
+  const saveSettings = (jsonData: JsonData) => {
+    const settings = {
+      targetDomain: jsonData.targetDomain,
+      dispBanner:
+        typeof jsonData.dispBanner === "boolean"
+          ? jsonData.dispBanner
+          : DEFAULT_SETTINGS.dispBanner,
+      blockRequest:
+        typeof jsonData.blockRequest === "boolean"
+          ? jsonData.blockRequest
+          : DEFAULT_SETTINGS.blockRequest,
+      postAlert:
+        typeof jsonData.postAlert === "boolean"
+          ? jsonData.postAlert
+          : DEFAULT_SETTINGS.postAlert,
+    };
+    chrome.storage.local.set(settings);
+  };
+
   // インポートボタンクリック時の処理
   const importData = () => {
     if (!file) {
-      toast({
-        title: message("import_setting_select_error_title"),
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-        containerStyle: { maxWidth: "100px" },
-      });
+      showToast(message("import_setting_select_error_title"), "error");
       return;
     }
 
@@ -71,36 +115,22 @@ const Options = () => {
       try {
         const jsonData = JSON.parse(e.target?.result as string);
         if (!validateJson(jsonData)) {
-          toast({
-            title: message("import_setting_format_error_message"),
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-            containerStyle: { maxWidth: "100px" },
-          });
+          showToast(message("import_setting_format_error_message"), "error");
           return;
         }
-        chrome.storage.local.set({targetDomain: jsonData.targetDomain});
-        chrome.storage.local.set({dispBanner: jsonData.dispBanner == undefined || typeof(jsonData.dispBanner) !== 'boolean' ? true : jsonData.dispBanner});
-        chrome.storage.local.set({blockRequest: jsonData.blockRequest == undefined || typeof(jsonData.blockRequest) !== 'boolean' ? true : jsonData.blockRequest});
-        chrome.storage.local.set({postAlert: jsonData.postAlert == undefined || typeof(jsonData.postAlert) !== 'boolean' ? true : jsonData.postAlert});
-        toast({
-          title: message("import_setting_success_title"),
-          description: message("import_setting_success_message"),
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-          containerStyle: { maxWidth: "100px" },
-        });
+
+        saveSettings(jsonData);
+        showToast(
+          message("import_setting_success_title"),
+          "success",
+          message("import_setting_success_message")
+        );
       } catch (e: any) {
-        toast({
-          title: message("import_setting_type_error_title"),
-          description: e.message,
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-          containerStyle: { maxWidth: "100px"}
-        });
+        showToast(
+          message("import_setting_type_error_title"),
+          "error",
+          e.message
+        );
       }
     };
     reader.readAsText(file);
@@ -108,33 +138,32 @@ const Options = () => {
 
   // エクスポートボタンクリック時の処理
   const exportData = () => {
-    chrome.storage.local.get(["targetDomain", "dispBanner", "blockRequest", "postAlert"], (data) => {
-      const jsonData = {
-        targetDomain: data.targetDomain || [],
-        dispBanner: data.dispBanner ?? true,
-        blockRequest: data.blockRequest ?? true,
-        postAlert: data.postAlert?? true
-      };
+    chrome.storage.local.get(
+      ["targetDomain", "dispBanner", "blockRequest", "postAlert"],
+      (data) => {
+        const jsonData: JsonData = {
+          targetDomain: data.targetDomain || [],
+          dispBanner: data.dispBanner ?? DEFAULT_SETTINGS.dispBanner,
+          blockRequest: data.blockRequest ?? DEFAULT_SETTINGS.blockRequest,
+          postAlert: data.postAlert ?? DEFAULT_SETTINGS.postAlert,
+        };
 
-      const blob = new Blob([JSON.stringify(jsonData, null, 2)], {type: "application/json"});
-      const url = URL.createObjectURL(blob);
+        const blob = new Blob([JSON.stringify(jsonData, null, 2)], {
+          type: "application/json",
+        });
+        const url = URL.createObjectURL(blob);
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "setting.json";
-      a.click();
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "setting.json";
+        a.click();
 
-      URL.revokeObjectURL(url);
+        URL.revokeObjectURL(url);
 
-      toast({
-        title: message("export_setting_success_title"),
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-        containerStyle: { maxWidth: "100px" },
-      });
-    });
-  }
+        showToast(message("export_setting_success_title"), "success");
+      }
+    );
+  };
 
   return (
     <Box h="500px" padding="15px">
@@ -191,9 +220,7 @@ const Options = () => {
             <Heading as="h2" size="sm">
               {message("option_export_title")}
             </Heading>
-            <Box pt={3}>
-              {message("option_export_description")}
-            </Box>
+            <Box pt={3}>{message("option_export_description")}</Box>
             <VStack
               padding={0}
               pt={3}
