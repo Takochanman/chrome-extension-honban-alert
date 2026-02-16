@@ -112,7 +112,7 @@ chrome.storage.onChanged.addListener(async (changes, namespace) => {
 
 // Helper function: 対象ドメインからURLフィルターに変換
 function convertDomainToUrlFilter(domain: string): string {
-  return domain.replace("^", "*://").replace("$", "/*");
+  return domain.replace(/\^/g, "*://").replace(/\$/g, "/*");
 }
 
 // Helper function: 既存ルールから指定条件のルールIDを取得
