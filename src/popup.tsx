@@ -1,13 +1,66 @@
-import { ChakraProvider, Box, FormLabel, Switch, Heading, Button, VStack, Container, StackDivider, Input, useToast, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogCloseButton, AlertDialogBody, AlertDialogFooter, useDisclosure, Divider, Skeleton, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverBody, PopoverHeader, HStack } from "@chakra-ui/react";
-import { AddIcon, EditIcon, CloseIcon, InfoOutlineIcon } from "@chakra-ui/icons";
+import {
+  ChakraProvider,
+  Box,
+  FormLabel,
+  Switch,
+  Heading,
+  Button,
+  VStack,
+  Container,
+  StackDivider,
+  Input,
+  useToast,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogCloseButton,
+  AlertDialogBody,
+  AlertDialogFooter,
+  useDisclosure,
+  Divider,
+  Skeleton,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverArrow,
+  PopoverBody,
+  PopoverHeader,
+  HStack,
+} from "@chakra-ui/react";
+import {
+  AddIcon,
+  EditIcon,
+  CloseIcon,
+  InfoOutlineIcon,
+} from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
-import { createRoot } from 'react-dom/client';
+import { createRoot } from "react-dom/client";
 import useI18n from "./useI18n";
 
 interface TargetDomain {
-  targetDomain: string,
-  isEdit: boolean
+  targetDomain: string;
+  isEdit: boolean;
 }
+
+// Helper function: <br> を JSX に変換
+const convertBrToJsx = (text: string) => {
+  return text.split("<br>").map((line, index) => (
+    <React.Fragment key={index}>
+      {line}
+      {index !== text.split("<br>").length - 1 && <br />}
+    </React.Fragment>
+  ));
+};
+
+// Helper function: メッセージ送信
+const sendMessageToContentScript = (target: string) => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (tabs[0]?.id) {
+      chrome.tabs.sendMessage(tabs[0].id, { target });
+    }
+  });
+};
 
 const Popup = () => {
   const [targetDomainList, setTargetDomainList] = useState<TargetDomain[]>([]);
@@ -16,125 +69,133 @@ const Popup = () => {
   const [isPostAlert, setIsPostAlert] = useState<boolean>(false);
   const [isBlockRequest, setIsBlockRequest] = useState<boolean>(false);
   const [blockPopupType, setBlockPopupType] = useState<string>("");
-  const {isOpen, onOpen, onClose} = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef<HTMLButtonElement>(null);
   const toast = useToast();
   const message = useI18n();
 
-  var url: string | undefined;
+  let url: string | undefined;
   chrome.tabs.query({ active: true, currentWindow: true }, (e) => {
-    url = e[0].url;
+    url = e[0]?.url;
   });
 
   useEffect(() => {
     chrome.storage.local.get(null, (data) => {
-      const targetDomain: string[] = data.targetDomain == undefined ? [] : data.targetDomain;
-      if (!(targetDomain == null || targetDomain.length == 0)) {
-        var newTargetDomainList: TargetDomain[] = [];
-        targetDomain.forEach((t) => {
-          newTargetDomainList.push({targetDomain: t, isEdit: false});
-        });
+      const targetDomain: string[] = data.targetDomain ?? [];
+      if (targetDomain.length > 0) {
+        const newTargetDomainList: TargetDomain[] = targetDomain.map((t) => ({
+          targetDomain: t,
+          isEdit: false,
+        }));
         setTargetDomainList(newTargetDomainList);
         setIsDispBanner(data.dispBanner);
         setIsPostAlert(data.postAlert);
         setIsBlockRequest(data.blockRequest);
       }
     });
+
     chrome.runtime.onMessage.addListener((msg) => {
       if (msg.action === "openPopup:blockRequest") {
-        // ポップアップを表示する処理
         setBlockPopupType("blockRequest");
         onOpen();
-      } else if(msg.action === "openPopup:blockPostRequest") {
-        // ポップアップを表示する処理
+      } else if (msg.action === "openPopup:blockPostRequest") {
         setBlockPopupType("blockPostRequest");
         onOpen();
       }
     });
   }, []);
 
-  // バナー表示の切り替え
-  const changeDispBanner = () => {
-    setIsDispBanner(!isDispBanner);
-    chrome.storage.local.set({dispBanner: !isDispBanner});
+  // 設定変更のトースト表示
+  const showToast = (title: string, description: string) => {
     toast({
-      title: !isDispBanner ? message("change_setting_disp_banner_toast_title_on") : message("change_setting_disp_banner_toast_title_off"),
-      description: message("change_setting_toast_description"),
+      title,
+      description,
       status: "success",
       duration: 3000,
       isClosable: true,
-      containerStyle: {maxWidth: '100px'}
+      containerStyle: { maxWidth: "100px" },
     });
-    if (url != undefined) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id!, {
-          target: "honbanAlertHandler:contentScript",
-        });
-      });
+  };
+
+  // バナー表示の切り替え
+  const changeDispBanner = () => {
+    const newValue = !isDispBanner;
+    setIsDispBanner(newValue);
+    chrome.storage.local.set({ dispBanner: newValue });
+
+    const title = newValue
+      ? message("change_setting_disp_banner_toast_title_on")
+      : message("change_setting_disp_banner_toast_title_off");
+    showToast(title, message("change_setting_toast_description"));
+
+    if (url) {
+      sendMessageToContentScript("honbanAlertHandler:contentScript");
     }
-  }
+  };
 
   // リクエストブロックの切り替え
   const changeBlockRequest = () => {
-    setIsBlockRequest(!isBlockRequest);
-    chrome.storage.local.set({ blockRequest: !isBlockRequest });
-    toast({
-      title: !isBlockRequest ? message("change_setting_block_request_toast_title_on") : message("change_setting_block_request_toast_title_off"),
-      description: message("change_setting_toast_description"),
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
+    const newValue = !isBlockRequest;
+    setIsBlockRequest(newValue);
+    chrome.storage.local.set({ blockRequest: newValue });
+
+    const title = newValue
+      ? message("change_setting_block_request_toast_title_on")
+      : message("change_setting_block_request_toast_title_off");
+    showToast(title, message("change_setting_toast_description"));
   };
 
   // POSTアラートの切り替え
   const changePostAlert = () => {
-    setIsPostAlert(!isPostAlert);
-    chrome.storage.local.set({ postAlert: !isPostAlert });
-    toast({
-      title: !isPostAlert ? message("change_setting_post_alert_toast_title_on") : message("change_setting_post_alert_toast_title_off"),
-      description: message("change_setting_toast_description"),
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
+    const newValue = !isPostAlert;
+    setIsPostAlert(newValue);
+    chrome.storage.local.set({ postAlert: newValue });
+
+    const title = newValue
+      ? message("change_setting_post_alert_toast_title_on")
+      : message("change_setting_post_alert_toast_title_off");
+    showToast(title, message("change_setting_toast_description"));
   };
 
   const changeTextHandler = (text: string, index: number) => {
-    var newDomainList = [...targetDomainList];
+    const newDomainList = [...targetDomainList];
     newDomainList[index].targetDomain = text;
     setTargetDomainList(newDomainList);
-  }
+  };
 
   const editButtonHandler = (index: number) => {
-    var newDomainList = [...targetDomainList];
+    const newDomainList = [...targetDomainList];
     newDomainList[index].isEdit = true;
     setTargetDomainList(newDomainList);
     setIsEditFlg(true);
-  }
+  };
 
   const deleteButtonHandler = (index: number) => {
-    var newDomainList = [...targetDomainList];
+    const newDomainList = [...targetDomainList];
     newDomainList.splice(index, 1);
     setTargetDomainList(newDomainList);
     setIsEditFlg(true);
-  }
+  };
 
   const addButtonHandler = () => {
-    var newDomainList = [...targetDomainList];
-    newDomainList.push({targetDomain: "", isEdit: true});
+    const newDomainList = [...targetDomainList];
+    newDomainList.push({ targetDomain: "", isEdit: true });
     setTargetDomainList(newDomainList);
     setIsEditFlg(true);
-  }
+  };
 
   const saveButtonHandler = () => {
-    const newDomainList = targetDomainList.map(t => {
-      t.isEdit = false;
-      return t;
-    })
-    chrome.storage.local.set({targetDomain: newDomainList.map(t => t.targetDomain)})
+    const newDomainList = targetDomainList.map((t) => ({
+      ...t,
+      isEdit: false,
+    }));
+
+    chrome.storage.local.set({
+      targetDomain: newDomainList.map((t) => t.targetDomain),
+    });
     setTargetDomainList(newDomainList);
     setIsEditFlg(false);
+
     toast({
       title: message("change_setting_domain_toast_title"),
       description: message("change_setting_toast_description"),
@@ -142,23 +203,10 @@ const Popup = () => {
       duration: 9000,
       isClosable: true,
     });
-    if (url != undefined) {
-      chrome.tabs.query({active: true, currentWindow: true}, tabs => {
-        chrome.tabs.sendMessage(tabs[0].id!, {
-          target: 'honbanAlertHandler:contentScript'
-        })
-      });
-    }
-  }
 
-  // <br> を JSX に変換する関数
-  const convertBrToJsx = (text: string) => {
-    return text.split("<br>").map((line, index) => (
-      <React.Fragment key={index}>
-        {line}
-        {index !== text.split("<br>").length - 1 && <br />}
-      </React.Fragment>
-    ));
+    if (url) {
+      sendMessageToContentScript("honbanAlertHandler:contentScript");
+    }
   };
 
   return (
@@ -425,6 +473,6 @@ const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
   <ChakraProvider>
-    <Popup/>
+    <Popup />
   </ChakraProvider>
 );
