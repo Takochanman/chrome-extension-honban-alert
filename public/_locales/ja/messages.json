@@ -20,6 +20,55 @@
   "change_setting_domain_toast_title": {
     "message": "対象ドメインを更新しました。"
   },
+  "change_setting_pause_toast_title": {
+    "message": "「$feature$」を$minutes$分間一時停止しました。",
+    "placeholders": {
+      "feature": { "content": "$1" },
+      "minutes": { "content": "$2" }
+    }
+  },
+  "change_setting_pause_toast_description": {
+    "message": "指定した時間が経過すると自動的にオンに戻ります。"
+  },
+  "popup_pause_modal_title": {
+    "message": "一時停止"
+  },
+  "popup_pause_modal_target": {
+    "message": "「$target$」を指定した時間だけオフにします。",
+    "placeholders": {
+      "target": { "content": "$1" }
+    }
+  },
+  "popup_pause_modal_description": {
+    "message": "指定した時間が経過すると自動的にオンに戻ります。（最大999分）"
+  },
+  "popup_pause_modal_minutes_label": {
+    "message": "停止時間（分）"
+  },
+  "popup_pause_modal_confirm_button": {
+    "message": "一時停止する"
+  },
+  "popup_pause_modal_cancel_button": {
+    "message": "キャンセル"
+  },
+  "popup_pause_all_button": {
+    "message": "全機能を一時停止"
+  },
+  "popup_pause_all_label": {
+    "message": "全機能"
+  },
+  "popup_resume_all_button": {
+    "message": "全機能を再開"
+  },
+  "popup_resume_all_toast_title": {
+    "message": "全機能を有効にしました。"
+  },
+  "popup_pause_remaining_label": {
+    "message": "残り"
+  },
+  "popup_pause_button_label": {
+    "message": "一時停止"
+  },
   "change_setting_toast_description": {
     "message": "画面に反映されない場合はページを更新してください。"
   },
@@ -115,5 +164,32 @@
   },
   "option_export_button": {
     "message": "エクスポート"
+  },
+  "update_title": {
+    "message": "アップデートのお知らせ"
+  },
+  "update_intro": {
+    "message": "Honban Alertが最新バージョンに更新されました。前回のバージョンからの主な変更点は以下の通りです。"
+  },
+  "update_feature_pause_title": {
+    "message": "一時停止機能を追加"
+  },
+  "update_feature_pause_description": {
+    "message": "各機能を指定した時間だけ一時停止できるようになりました。時間が経過すると自動的に元の状態に戻ります。全機能をまとめて一時停止／再開することも可能です。"
+  },
+  "update_feature_ui_title": {
+    "message": "ポップアップのUIを刷新"
+  },
+  "update_feature_ui_description": {
+    "message": "カードベースのデザインに刷新し、設定状態や一時停止の残り時間がひと目で分かるようになりました。"
+  },
+  "update_feature_toast_title": {
+    "message": "通知デザインを改善"
+  },
+  "update_feature_toast_description": {
+    "message": "トースト通知の見た目を調整し、連続して操作した際のちらつきを防止しました。"
+  },
+  "update_close_button": {
+    "message": "閉じる"
   }
 }

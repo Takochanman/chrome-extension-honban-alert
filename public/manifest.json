@@ -3,7 +3,7 @@
 
   "name": "Honban Alert",
   "description": "開発者向けツール。本番環境として指定したドメインのWebページを表示している際にアラートを表示します。",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "default_locale": "ja",
 
   "options_ui": {
@@ -29,7 +29,7 @@
     "service_worker": "js/background.js"
   },
 
-  "permissions": ["storage", "declarativeNetRequest", "webRequest"],
+  "permissions": ["storage", "declarativeNetRequest", "webRequest", "alarms"],
 
   "host_permissions": [
     "<all_urls>"

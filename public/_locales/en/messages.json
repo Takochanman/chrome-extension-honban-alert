@@ -20,6 +20,55 @@
   "change_setting_domain_toast_title": {
     "message": "Target domain updated."
   },
+  "change_setting_pause_toast_title": {
+    "message": "\"$feature$\" paused for $minutes$ min.",
+    "placeholders": {
+      "feature": { "content": "$1" },
+      "minutes": { "content": "$2" }
+    }
+  },
+  "change_setting_pause_toast_description": {
+    "message": "It will automatically turn back on when the time is up."
+  },
+  "popup_pause_modal_title": {
+    "message": "Pause"
+  },
+  "popup_pause_modal_target": {
+    "message": "\"$target$\" will be turned off for the specified duration.",
+    "placeholders": {
+      "target": { "content": "$1" }
+    }
+  },
+  "popup_pause_modal_description": {
+    "message": "It will automatically turn back on after the specified time. (max 999 min)"
+  },
+  "popup_pause_modal_minutes_label": {
+    "message": "Pause duration (minutes)"
+  },
+  "popup_pause_modal_confirm_button": {
+    "message": "Pause"
+  },
+  "popup_pause_modal_cancel_button": {
+    "message": "Cancel"
+  },
+  "popup_pause_all_button": {
+    "message": "Pause all"
+  },
+  "popup_pause_all_label": {
+    "message": "All features"
+  },
+  "popup_resume_all_button": {
+    "message": "Resume all"
+  },
+  "popup_resume_all_toast_title": {
+    "message": "All features enabled."
+  },
+  "popup_pause_remaining_label": {
+    "message": "Left"
+  },
+  "popup_pause_button_label": {
+    "message": "Pause"
+  },
   "change_setting_toast_description": {
     "message": "If changes are not reflected, please refresh the page."
   },
@@ -115,5 +164,32 @@
   },
   "option_export_button": {
     "message": "Export"
+  },
+  "update_title": {
+    "message": "What's New"
+  },
+  "update_intro": {
+    "message": "Honban Alert has been updated to the latest version. Here are the main changes since the previous version."
+  },
+  "update_feature_pause_title": {
+    "message": "Added a pause feature"
+  },
+  "update_feature_pause_description": {
+    "message": "You can now pause each feature for a set amount of time. It automatically turns back on once the time is up. You can also pause or resume all features at once."
+  },
+  "update_feature_ui_title": {
+    "message": "Redesigned the popup UI"
+  },
+  "update_feature_ui_description": {
+    "message": "The popup now uses a card-based design, making it easier to see feature status and remaining pause time at a glance."
+  },
+  "update_feature_toast_title": {
+    "message": "Improved toast notifications"
+  },
+  "update_feature_toast_description": {
+    "message": "Refined the look of toast notifications and fixed flickering when triggered in quick succession."
+  },
+  "update_close_button": {
+    "message": "Close"
   }
 }

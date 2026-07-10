@@ -4,6 +4,13 @@ function polling() {
 
 polling();
 
+// アップデート時、変更点を伝えるページを自動で開く
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
+    chrome.tabs.create({ url: chrome.runtime.getURL("update.html") });
+  }
+});
+
 // ローカルストレージ初期化処理
 chrome.storage.local.get({targetDomain: null}, (data) => {
   console.log(data)
@@ -17,6 +24,14 @@ chrome.storage.local.get({targetDomain: null}, (data) => {
         chrome.storage.local.set({postAlert: data.postAlert == undefined || typeof(data.postAlert) !== 'boolean' ? true : data.postAlert});
       })
   }
+});
+
+// 一時停止タイマー（アラーム）発火時の処理
+// 一時停止時間が終了したら、対象の設定をオンに戻す
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (!alarm.name.startsWith('pause:')) return;
+  const feature = alarm.name.slice('pause:'.length);
+  chrome.storage.local.set({ [feature]: true, [`${feature}PauseUntil`]: null });
 });
 
 // アイコンバッジ変更処理
