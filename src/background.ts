@@ -19,6 +19,14 @@ chrome.storage.local.get({targetDomain: null}, (data) => {
   }
 });
 
+// 一時停止タイマー（アラーム）発火時の処理
+// 一時停止時間が終了したら、対象の設定をオンに戻す
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (!alarm.name.startsWith('pause:')) return;
+  const feature = alarm.name.slice('pause:'.length);
+  chrome.storage.local.set({ [feature]: true, [`${feature}PauseUntil`]: null });
+});
+
 // アイコンバッジ変更処理
 chrome.runtime.onMessage.addListener((req) => {
   if (req.target === 'changeBadge:background') {

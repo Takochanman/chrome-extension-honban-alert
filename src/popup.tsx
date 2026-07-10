@@ -30,6 +30,12 @@ import {
   Image,
   IconButton,
   Tooltip,
+  Badge,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
 } from "@chakra-ui/react";
 import {
   AddIcon,
@@ -37,6 +43,7 @@ import {
   CloseIcon,
   InfoOutlineIcon,
   SettingsIcon,
+  TimeIcon,
 } from "@chakra-ui/icons";
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -46,6 +53,19 @@ interface TargetDomain {
   targetDomain: string;
   isEdit: boolean;
 }
+
+// 一時停止に対応する機能のキー
+type FeatureKey = "dispBanner" | "blockRequest" | "postAlert";
+const FEATURE_KEYS: FeatureKey[] = ["dispBanner", "blockRequest", "postAlert"];
+const pauseUntilKeyOf = (f: FeatureKey) => `${f}PauseUntil`;
+
+// 残り時間（ミリ秒）を m:ss 形式に整形する
+const formatRemaining = (ms: number) => {
+  const totalSec = Math.max(0, Math.ceil(ms / 1000));
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+};
 
 // <br> を JSX に変換する関数
 const convertBrToJsx = (text: string) => {
@@ -63,6 +83,10 @@ interface SettingToggleProps {
   popoverBody: string;
   isChecked: boolean;
   onChange: () => void;
+  onPauseClick: () => void;
+  pauseLabel: string;
+  remainingMs?: number | null;
+  remainingLabel?: string;
 }
 
 // 設定トグル1行分の共通レイアウト
@@ -72,7 +96,12 @@ const SettingToggle = ({
   popoverBody,
   isChecked,
   onChange,
+  onPauseClick,
+  pauseLabel,
+  remainingMs,
+  remainingLabel,
 }: SettingToggleProps) => {
+  const isPaused = remainingMs != null && remainingMs > 0;
   return (
     <Flex align="center" justify="space-between" w="100%">
       <HStack spacing={1.5} align="center">
@@ -101,13 +130,44 @@ const SettingToggle = ({
             <PopoverBody>{convertBrToJsx(popoverBody)}</PopoverBody>
           </PopoverContent>
         </Popover>
+        {isPaused && (
+          <Badge
+            colorScheme="orange"
+            variant="subtle"
+            borderRadius="full"
+            px={2}
+            display="flex"
+            alignItems="center"
+            gap="3px"
+            fontSize="0.65rem"
+            textTransform="none"
+          >
+            <TimeIcon boxSize={2.5} />
+            {remainingLabel} {formatRemaining(remainingMs!)}
+          </Badge>
+        )}
       </HStack>
-      <Switch
-        id={id}
-        colorScheme="orange"
-        isChecked={isChecked}
-        onChange={onChange}
-      />
+      <HStack spacing={1}>
+        {isChecked && (
+          <Tooltip label={pauseLabel} fontSize="xs" hasArrow>
+            <IconButton
+              aria-label={pauseLabel}
+              icon={<TimeIcon boxSize={3} />}
+              size="xs"
+              variant="ghost"
+              colorScheme="orange"
+              borderRadius="full"
+              onClick={onPauseClick}
+            />
+          </Tooltip>
+        )}
+        <Switch
+          id={id}
+          colorScheme="orange"
+          isChecked={isChecked}
+          onChange={onChange}
+        />
+      </HStack>
     </Flex>
   );
 };
@@ -119,8 +179,25 @@ const Popup = () => {
   const [isPostAlert, setIsPostAlert] = useState<boolean>(false);
   const [isBlockRequest, setIsBlockRequest] = useState<boolean>(false);
   const [blockPopupType, setBlockPopupType] = useState<string>("");
+  // 各機能の一時停止終了時刻（epoch ms）。null なら一時停止中でない
+  const [pauseUntil, setPauseUntil] = useState<Record<FeatureKey, number | null>>(
+    { dispBanner: null, blockRequest: null, postAlert: null },
+  );
+  // 残り時間のカウントダウン用に毎秒更新する現在時刻
+  const [now, setNow] = useState<number>(Date.now());
   const { isOpen, onOpen, onClose } = useDisclosure();
+  // 一時停止モーダル用
+  const {
+    isOpen: isPauseOpen,
+    onOpen: onPauseOpen,
+    onClose: onPauseClose,
+  } = useDisclosure();
+  const [pauseTarget, setPauseTarget] = useState<FeatureKey | "all" | null>(null);
+  // 「全機能一時停止」時、クリック時点でONだった機能のみを対象として保持する
+  const [pauseAllTargets, setPauseAllTargets] = useState<FeatureKey[]>([]);
+  const [pauseMinutes, setPauseMinutes] = useState<string>("10");
   const cancelRef = React.useRef<HTMLButtonElement>(null);
+  const pauseCancelRef = React.useRef<HTMLButtonElement>(null);
   const toast = useToast();
   const message = useI18n();
 
@@ -143,6 +220,11 @@ const Popup = () => {
         setIsPostAlert(data.postAlert);
         setIsBlockRequest(data.blockRequest);
       }
+      setPauseUntil({
+        dispBanner: data.dispBannerPauseUntil ?? null,
+        blockRequest: data.blockRequestPauseUntil ?? null,
+        postAlert: data.postAlertPauseUntil ?? null,
+      });
     });
     chrome.runtime.onMessage.addListener((msg) => {
       if (msg.action === "openPopup:blockRequest") {
@@ -157,37 +239,129 @@ const Popup = () => {
     });
   }, []);
 
-  // バナー表示の切り替え
-  const changeDispBanner = () => {
-    setIsDispBanner(!isDispBanner);
-    chrome.storage.local.set({ dispBanner: !isDispBanner });
-    toast({
-      title: !isDispBanner
-        ? message("change_setting_disp_banner_toast_title_on")
-        : message("change_setting_disp_banner_toast_title_off"),
-      description: message("change_setting_toast_description"),
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-      containerStyle: { maxWidth: "100px" },
+  // カウントダウン用の現在時刻を毎秒更新
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  // ストレージ変更を監視し、UIの状態を同期する
+  // （一時停止時間終了時のバックグラウンドによる自動オンなどを反映）
+  useEffect(() => {
+    const listener = (
+      changes: { [key: string]: chrome.storage.StorageChange },
+      area: string,
+    ) => {
+      if (area !== "local") return;
+      if (changes.dispBanner) setIsDispBanner(!!changes.dispBanner.newValue);
+      if (changes.blockRequest)
+        setIsBlockRequest(!!changes.blockRequest.newValue);
+      if (changes.postAlert) setIsPostAlert(!!changes.postAlert.newValue);
+      if (changes.dispBannerPauseUntil)
+        setPauseUntil((p) => ({
+          ...p,
+          dispBanner: changes.dispBannerPauseUntil.newValue ?? null,
+        }));
+      if (changes.blockRequestPauseUntil)
+        setPauseUntil((p) => ({
+          ...p,
+          blockRequest: changes.blockRequestPauseUntil.newValue ?? null,
+        }));
+      if (changes.postAlertPauseUntil)
+        setPauseUntil((p) => ({
+          ...p,
+          postAlert: changes.postAlertPauseUntil.newValue ?? null,
+        }));
+    };
+    chrome.storage.onChanged.addListener(listener);
+    return () => chrome.storage.onChanged.removeListener(listener);
+  }, []);
+
+  // 機能のチェック状態を取得／更新するヘルパー
+  const isCheckedOf = (f: FeatureKey) =>
+    f === "dispBanner"
+      ? isDispBanner
+      : f === "blockRequest"
+        ? isBlockRequest
+        : isPostAlert;
+
+  const setChecked = (f: FeatureKey, v: boolean) => {
+    if (f === "dispBanner") setIsDispBanner(v);
+    else if (f === "blockRequest") setIsBlockRequest(v);
+    else setIsPostAlert(v);
+  };
+
+  // 機能名（i18n）
+  const featureLabelOf = (f: FeatureKey) =>
+    f === "dispBanner"
+      ? message("popup_setting_disp_banner_title")
+      : f === "blockRequest"
+        ? message("popup_setting_block_request_title")
+        : message("popup_setting_block_post_request_title");
+
+  // 有効化トースト（i18n）
+  const resumeToastTitleOf = (f: FeatureKey) =>
+    f === "dispBanner"
+      ? message("change_setting_disp_banner_toast_title_on")
+      : f === "blockRequest"
+        ? message("change_setting_block_request_toast_title_on")
+        : message("change_setting_post_alert_toast_title_on");
+
+  // 無効化（恒久オフ）トースト（i18n）
+  const turnOffToastTitleOf = (f: FeatureKey) =>
+    f === "dispBanner"
+      ? message("change_setting_disp_banner_toast_title_off")
+      : f === "blockRequest"
+        ? message("change_setting_block_request_toast_title_off")
+        : message("change_setting_post_alert_toast_title_off");
+
+  // アクティブタブのコンテンツスクリプトへ再描画を通知する
+  const notifyContentScript = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tabId = tabs[0]?.id;
+      if (tabId != null) {
+        chrome.tabs
+          .sendMessage(tabId, { target: "honbanAlertHandler:contentScript" })
+          .catch(() => {});
+      }
     });
-    if (url != undefined) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id!, {
-          target: "honbanAlertHandler:contentScript",
-        });
+  };
+
+  // 機能を一時停止する（設定オフ＋終了時刻の保存＋復帰アラーム作成）
+  const applyPause = (f: FeatureKey, until: number) => {
+    setChecked(f, false);
+    setPauseUntil((prev) => ({ ...prev, [f]: until }));
+    chrome.storage.local.set({ [f]: false, [pauseUntilKeyOf(f)]: until });
+    chrome.alarms.create(`pause:${f}`, { when: until });
+  };
+
+  // 機能を有効に戻す（手動オン。タイマーをリセットして一時停止を終了）
+  const resumeFeature = (f: FeatureKey, silent = false) => {
+    setChecked(f, true);
+    setPauseUntil((prev) => ({ ...prev, [f]: null }));
+    chrome.storage.local.set({ [f]: true, [pauseUntilKeyOf(f)]: null });
+    chrome.alarms.clear(`pause:${f}`);
+    notifyContentScript();
+    if (!silent) {
+      toast({
+        title: resumeToastTitleOf(f),
+        description: message("change_setting_toast_description"),
+        status: "success",
+        duration: 3000,
+        isClosable: true,
       });
     }
   };
 
-  // リクエストブロックの切り替え
-  const changeBlockRequest = () => {
-    setIsBlockRequest(!isBlockRequest);
-    chrome.storage.local.set({ blockRequest: !isBlockRequest });
+  // 機能を恒久的にオフにする（タイマーなし）
+  const turnOffFeature = (f: FeatureKey) => {
+    setChecked(f, false);
+    setPauseUntil((prev) => ({ ...prev, [f]: null }));
+    chrome.storage.local.set({ [f]: false, [pauseUntilKeyOf(f)]: null });
+    chrome.alarms.clear(`pause:${f}`);
+    notifyContentScript();
     toast({
-      title: !isBlockRequest
-        ? message("change_setting_block_request_toast_title_on")
-        : message("change_setting_block_request_toast_title_off"),
+      title: turnOffToastTitleOf(f),
       description: message("change_setting_toast_description"),
       status: "success",
       duration: 3000,
@@ -195,19 +369,99 @@ const Popup = () => {
     });
   };
 
-  // POSTアラートの切り替え
-  const changePostAlert = () => {
-    setIsPostAlert(!isPostAlert);
-    chrome.storage.local.set({ postAlert: !isPostAlert });
+  // トグル操作時のハンドラ（タイマーなしの恒久オン／オフ）
+  // ON→OFF: 恒久的に無効化 / OFF→ON: 手動で有効化（一時停止中であれば解除）
+  const handleToggle = (f: FeatureKey) => {
+    if (isCheckedOf(f)) {
+      turnOffFeature(f);
+    } else {
+      resumeFeature(f);
+    }
+  };
+
+  // 一時停止アイコンクリック時のハンドラ（単一機能）
+  const openPauseSingle = (f: FeatureKey) => {
+    setPauseTarget(f);
+    setPauseMinutes("10");
+    onPauseOpen();
+  };
+
+  // 全機能を一時停止するモーダルを開く（クリック時点でONの機能のみを対象とする）
+  const openPauseAll = () => {
+    const onFeatures = FEATURE_KEYS.filter((f) => isCheckedOf(f));
+    if (onFeatures.length === 0) return;
+    setPauseAllTargets(onFeatures);
+    setPauseTarget("all");
+    setPauseMinutes("10");
+    onPauseOpen();
+  };
+
+  // 一時停止中の全機能を有効に戻す（もともとONだった機能のみが対象になる）
+  const resumeAll = () => {
+    const pausedFeatures = FEATURE_KEYS.filter((f) => {
+      const u = pauseUntil[f];
+      return u != null && u > now;
+    });
+    pausedFeatures.forEach((f) => resumeFeature(f, true));
+    notifyContentScript();
     toast({
-      title: !isPostAlert
-        ? message("change_setting_post_alert_toast_title_on")
-        : message("change_setting_post_alert_toast_title_off"),
+      title: message("popup_resume_all_toast_title"),
       description: message("change_setting_toast_description"),
       status: "success",
       duration: 3000,
       isClosable: true,
     });
+  };
+
+  // モーダルで「一時停止する」を押したときの処理
+  const confirmPause = () => {
+    let minutes = parseInt(pauseMinutes, 10);
+    if (isNaN(minutes) || minutes < 1) minutes = 10;
+    if (minutes > 999) minutes = 999;
+    // until の起点と now を同じ時刻に同期させ、カウントダウン開始直後に
+    // 1秒以内の描画ラグ（setInterval の未更新分）で残り時間が繰り上がらないようにする
+    const nowMs = Date.now();
+    const until = nowMs + minutes * 60 * 1000;
+    setNow(nowMs);
+    const targets: FeatureKey[] =
+      pauseTarget === "all"
+        ? pauseAllTargets
+        : pauseTarget
+          ? [pauseTarget]
+          : [];
+    targets.forEach((f) => applyPause(f, until));
+    notifyContentScript();
+    const label =
+      pauseTarget === "all"
+        ? message("popup_pause_all_label")
+        : pauseTarget
+          ? featureLabelOf(pauseTarget)
+          : "";
+    toast({
+      title: message("change_setting_pause_toast_title", [label, String(minutes)]),
+      description: message("change_setting_pause_toast_description"),
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+    setPauseTarget(null);
+    setPauseAllTargets([]);
+    onPauseClose();
+  };
+
+  // いずれかの機能が一時停止中か
+  const anyPaused = FEATURE_KEYS.some((f) => {
+    const u = pauseUntil[f];
+    return u != null && u > now;
+  });
+
+  // いずれかの機能が現在ONか（一時停止対象があるか）
+  const anyOn = FEATURE_KEYS.some((f) => isCheckedOf(f));
+
+  // 一時停止中の機能について、残り時間（ミリ秒）を返す
+  const remainingMsOf = (f: FeatureKey) => {
+    const u = pauseUntil[f];
+    return u != null && u > now ? u - now : null;
   };
 
   const changeTextHandler = (text: string, index: number) => {
@@ -291,17 +545,40 @@ const Popup = () => {
 
       <Box px="16px" py="16px">
         {/* 設定カード */}
-        <Text
-          fontSize="xs"
-          fontWeight="bold"
-          color="gray.500"
-          textTransform="uppercase"
-          letterSpacing="wide"
-          mb="8px"
-        >
-          {/* 設定 */}
-          {message("popup_setting_title")}
-        </Text>
+        <Flex align="center" justify="space-between" mb="8px">
+          <Text
+            fontSize="xs"
+            fontWeight="bold"
+            color="gray.500"
+            textTransform="uppercase"
+            letterSpacing="wide"
+          >
+            {/* 設定 */}
+            {message("popup_setting_title")}
+          </Text>
+          {anyPaused ? (
+            <Button
+              size="xs"
+              variant="ghost"
+              colorScheme="orange"
+              leftIcon={<TimeIcon boxSize={3} />}
+              onClick={resumeAll}
+            >
+              {message("popup_resume_all_button")}
+            </Button>
+          ) : (
+            <Button
+              size="xs"
+              variant="ghost"
+              colorScheme="orange"
+              leftIcon={<TimeIcon boxSize={3} />}
+              onClick={openPauseAll}
+              isDisabled={!anyOn}
+            >
+              {message("popup_pause_all_button")}
+            </Button>
+          )}
+        </Flex>
         <Box
           bg="white"
           borderRadius="12px"
@@ -322,7 +599,11 @@ const Popup = () => {
                 title={message("popup_setting_disp_banner_title")}
                 popoverBody={message("popover_disp_banner_body")}
                 isChecked={isDispBanner}
-                onChange={changeDispBanner}
+                onChange={() => handleToggle("dispBanner")}
+                onPauseClick={() => openPauseSingle("dispBanner")}
+                pauseLabel={message("popup_pause_button_label")}
+                remainingMs={remainingMsOf("dispBanner")}
+                remainingLabel={message("popup_pause_remaining_label")}
               />
             </Box>
             <Box py="10px">
@@ -331,7 +612,11 @@ const Popup = () => {
                 title={message("popup_setting_block_request_title")}
                 popoverBody={message("popover_block_request_body")}
                 isChecked={isBlockRequest}
-                onChange={changeBlockRequest}
+                onChange={() => handleToggle("blockRequest")}
+                onPauseClick={() => openPauseSingle("blockRequest")}
+                pauseLabel={message("popup_pause_button_label")}
+                remainingMs={remainingMsOf("blockRequest")}
+                remainingLabel={message("popup_pause_remaining_label")}
               />
             </Box>
             <Box py="10px">
@@ -340,7 +625,11 @@ const Popup = () => {
                 title={message("popup_setting_block_post_request_title")}
                 popoverBody={message("popover_block_post_request_body")}
                 isChecked={isPostAlert}
-                onChange={changePostAlert}
+                onChange={() => handleToggle("postAlert")}
+                onPauseClick={() => openPauseSingle("postAlert")}
+                pauseLabel={message("popup_pause_button_label")}
+                remainingMs={remainingMsOf("postAlert")}
+                remainingLabel={message("popup_pause_remaining_label")}
               />
             </Box>
           </VStack>
@@ -510,6 +799,79 @@ const Popup = () => {
               onClick={onClose}
             >
               {message("popup_blocked_alert_modal_close_button")}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      {/* 一時停止モーダル */}
+      <AlertDialog
+        motionPreset="slideInBottom"
+        leastDestructiveRef={pauseCancelRef}
+        onClose={onPauseClose}
+        isOpen={isPauseOpen}
+        isCentered
+      >
+        <AlertDialogOverlay />
+        <AlertDialogContent w="90%" borderRadius="12px">
+          <AlertDialogHeader
+            display="flex"
+            alignItems="center"
+            gap="8px"
+            color="orange.500"
+            fontSize="md"
+          >
+            <TimeIcon boxSize={4} />
+            {message("popup_pause_modal_title")}
+          </AlertDialogHeader>
+          <AlertDialogCloseButton />
+          <AlertDialogBody fontSize="sm">
+            <Text mb="4px">
+              {message("popup_pause_modal_target", [
+                pauseTarget === "all"
+                  ? message("popup_pause_all_label")
+                  : pauseTarget
+                    ? featureLabelOf(pauseTarget)
+                    : "",
+              ])}
+            </Text>
+            <Text mb="12px" color="gray.500" fontSize="xs">
+              {message("popup_pause_modal_description")}
+            </Text>
+            <FormLabel fontSize="sm" fontWeight="medium" mb="4px">
+              {message("popup_pause_modal_minutes_label")}
+            </FormLabel>
+            <NumberInput
+              min={1}
+              max={999}
+              value={pauseMinutes}
+              onChange={(v) => setPauseMinutes(v)}
+              size="sm"
+              focusBorderColor="orange.500"
+            >
+              <NumberInputField borderRadius="8px" />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </AlertDialogBody>
+          <AlertDialogFooter gap="8px">
+            <Button
+              ref={pauseCancelRef}
+              onClick={onPauseClose}
+              variant="ghost"
+              borderRadius="8px"
+              size="sm"
+            >
+              {message("popup_pause_modal_cancel_button")}
+            </Button>
+            <Button
+              colorScheme="orange"
+              borderRadius="8px"
+              size="sm"
+              onClick={confirmPause}
+            >
+              {message("popup_pause_modal_confirm_button")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

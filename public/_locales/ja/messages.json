@@ -20,6 +20,55 @@
   "change_setting_domain_toast_title": {
     "message": "対象ドメインを更新しました。"
   },
+  "change_setting_pause_toast_title": {
+    "message": "「$feature$」を$minutes$分間一時停止しました。",
+    "placeholders": {
+      "feature": { "content": "$1" },
+      "minutes": { "content": "$2" }
+    }
+  },
+  "change_setting_pause_toast_description": {
+    "message": "指定した時間が経過すると自動的にオンに戻ります。"
+  },
+  "popup_pause_modal_title": {
+    "message": "一時停止"
+  },
+  "popup_pause_modal_target": {
+    "message": "「$target$」を指定した時間だけオフにします。",
+    "placeholders": {
+      "target": { "content": "$1" }
+    }
+  },
+  "popup_pause_modal_description": {
+    "message": "指定した時間が経過すると自動的にオンに戻ります。（最大999分）"
+  },
+  "popup_pause_modal_minutes_label": {
+    "message": "停止時間（分）"
+  },
+  "popup_pause_modal_confirm_button": {
+    "message": "一時停止する"
+  },
+  "popup_pause_modal_cancel_button": {
+    "message": "キャンセル"
+  },
+  "popup_pause_all_button": {
+    "message": "全機能を一時停止"
+  },
+  "popup_pause_all_label": {
+    "message": "全機能"
+  },
+  "popup_resume_all_button": {
+    "message": "全機能を再開"
+  },
+  "popup_resume_all_toast_title": {
+    "message": "全機能を有効にしました。"
+  },
+  "popup_pause_remaining_label": {
+    "message": "残り"
+  },
+  "popup_pause_button_label": {
+    "message": "一時停止"
+  },
   "change_setting_toast_description": {
     "message": "画面に反映されない場合はページを更新してください。"
   },

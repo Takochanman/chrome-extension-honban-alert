@@ -20,6 +20,55 @@
   "change_setting_domain_toast_title": {
     "message": "Target domain updated."
   },
+  "change_setting_pause_toast_title": {
+    "message": "\"$feature$\" paused for $minutes$ min.",
+    "placeholders": {
+      "feature": { "content": "$1" },
+      "minutes": { "content": "$2" }
+    }
+  },
+  "change_setting_pause_toast_description": {
+    "message": "It will automatically turn back on when the time is up."
+  },
+  "popup_pause_modal_title": {
+    "message": "Pause"
+  },
+  "popup_pause_modal_target": {
+    "message": "\"$target$\" will be turned off for the specified duration.",
+    "placeholders": {
+      "target": { "content": "$1" }
+    }
+  },
+  "popup_pause_modal_description": {
+    "message": "It will automatically turn back on after the specified time. (max 999 min)"
+  },
+  "popup_pause_modal_minutes_label": {
+    "message": "Pause duration (minutes)"
+  },
+  "popup_pause_modal_confirm_button": {
+    "message": "Pause"
+  },
+  "popup_pause_modal_cancel_button": {
+    "message": "Cancel"
+  },
+  "popup_pause_all_button": {
+    "message": "Pause all"
+  },
+  "popup_pause_all_label": {
+    "message": "All features"
+  },
+  "popup_resume_all_button": {
+    "message": "Resume all"
+  },
+  "popup_resume_all_toast_title": {
+    "message": "All features enabled."
+  },
+  "popup_pause_remaining_label": {
+    "message": "Left"
+  },
+  "popup_pause_button_label": {
+    "message": "Pause"
+  },
   "change_setting_toast_description": {
     "message": "If changes are not reflected, please refresh the page."
   },

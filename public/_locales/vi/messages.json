@@ -20,6 +20,55 @@
   "change_setting_domain_toast_title": {
     "message": "Đã cập nhật miền mục tiêu."
   },
+  "change_setting_pause_toast_title": {
+    "message": "Đã tạm dừng \"$feature$\" trong $minutes$ phút.",
+    "placeholders": {
+      "feature": { "content": "$1" },
+      "minutes": { "content": "$2" }
+    }
+  },
+  "change_setting_pause_toast_description": {
+    "message": "Sẽ tự động bật lại khi hết thời gian."
+  },
+  "popup_pause_modal_title": {
+    "message": "Tạm dừng"
+  },
+  "popup_pause_modal_target": {
+    "message": "\"$target$\" sẽ được tắt trong khoảng thời gian đã chỉ định.",
+    "placeholders": {
+      "target": { "content": "$1" }
+    }
+  },
+  "popup_pause_modal_description": {
+    "message": "Sẽ tự động bật lại sau khi hết thời gian. (tối đa 999 phút)"
+  },
+  "popup_pause_modal_minutes_label": {
+    "message": "Thời gian tạm dừng (phút)"
+  },
+  "popup_pause_modal_confirm_button": {
+    "message": "Tạm dừng"
+  },
+  "popup_pause_modal_cancel_button": {
+    "message": "Hủy"
+  },
+  "popup_pause_all_button": {
+    "message": "Tạm dừng tất cả"
+  },
+  "popup_pause_all_label": {
+    "message": "Tất cả chức năng"
+  },
+  "popup_resume_all_button": {
+    "message": "Tiếp tục tất cả"
+  },
+  "popup_resume_all_toast_title": {
+    "message": "Đã bật tất cả chức năng."
+  },
+  "popup_pause_remaining_label": {
+    "message": "Còn lại"
+  },
+  "popup_pause_button_label": {
+    "message": "Tạm dừng"
+  },
   "change_setting_toast_description": {
     "message": "Nếu thay đổi không được hiển thị, vui lòng làm mới trang."
   },

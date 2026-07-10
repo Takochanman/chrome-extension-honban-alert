@@ -29,7 +29,7 @@
     "service_worker": "js/background.js"
   },
 
-  "permissions": ["storage", "declarativeNetRequest", "webRequest"],
+  "permissions": ["storage", "declarativeNetRequest", "webRequest", "alarms"],
 
   "host_permissions": [
     "<all_urls>"

@@ -147,19 +147,34 @@ const honbanAlertHandler = () => {
 }
 honbanAlertHandler();
 
+// バナー・POSTアラートの表示状態を最新の設定に合わせて再構築する
+const refreshHonbanAlert = () => {
+  var banner = document.getElementsByTagName("extension-honban-alert");
+  if (banner[0] != undefined) banner[0].remove();
+  window.removeEventListener("scroll", handleScroll);
+  document.querySelector("form")?.removeEventListener("submit", handleSubmit);
+  chrome.runtime.sendMessage({
+    target: "changeBadge:background",
+    badgeText: "",
+  });
+  honbanAlertHandler();
+};
+
 // メッセージ受信時の処理
 chrome.runtime.onMessage.addListener((req, options, sendResponse) => {
   if (req.target ==='honbanAlertHandler:contentScript') {
-    var banner = document.getElementsByTagName("extension-honban-alert");
-    if (banner[0] != undefined) banner[0].remove();
-    window.removeEventListener("scroll", handleScroll);
-    document.querySelector("form")?.removeEventListener("submit", handleSubmit);
-    chrome.runtime.sendMessage({
-      target: "changeBadge:background",
-      badgeText: "",
-    });
-    honbanAlertHandler();
+    refreshHonbanAlert();
   }
   sendResponse();
   return true;
 })
+
+// ローカルストレージ変更時の処理
+// バックグラウンドの一時停止タイマー終了時など、ポップアップを経由しない設定変更でも
+// バナー／POSTアラートの表示状態を追従させるために全タブで監視する
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'local') return;
+  if (changes.dispBanner || changes.postAlert || changes.targetDomain) {
+    refreshHonbanAlert();
+  }
+});
