@@ -164,5 +164,32 @@
   },
   "option_export_button": {
     "message": "Export"
+  },
+  "update_title": {
+    "message": "What's New"
+  },
+  "update_intro": {
+    "message": "Honban Alert has been updated to the latest version. Here are the main changes since the previous version."
+  },
+  "update_feature_pause_title": {
+    "message": "Added a pause feature"
+  },
+  "update_feature_pause_description": {
+    "message": "You can now pause each feature for a set amount of time. It automatically turns back on once the time is up. You can also pause or resume all features at once."
+  },
+  "update_feature_ui_title": {
+    "message": "Redesigned the popup UI"
+  },
+  "update_feature_ui_description": {
+    "message": "The popup now uses a card-based design, making it easier to see feature status and remaining pause time at a glance."
+  },
+  "update_feature_toast_title": {
+    "message": "Improved toast notifications"
+  },
+  "update_feature_toast_description": {
+    "message": "Refined the look of toast notifications and fixed flickering when triggered in quick succession."
+  },
+  "update_close_button": {
+    "message": "Close"
   }
 }

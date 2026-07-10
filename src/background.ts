@@ -4,6 +4,13 @@ function polling() {
 
 polling();
 
+// アップデート時、変更点を伝えるページを自動で開く
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === chrome.runtime.OnInstalledReason.UPDATE) {
+    chrome.tabs.create({ url: chrome.runtime.getURL("update.html") });
+  }
+});
+
 // ローカルストレージ初期化処理
 chrome.storage.local.get({targetDomain: null}, (data) => {
   console.log(data)

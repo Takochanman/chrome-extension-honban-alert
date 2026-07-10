@@ -164,5 +164,32 @@
   },
   "option_export_button": {
     "message": "Xuất"
+  },
+  "update_title": {
+    "message": "Thông báo Cập nhật"
+  },
+  "update_intro": {
+    "message": "Honban Alert đã được cập nhật lên phiên bản mới nhất. Dưới đây là những thay đổi chính so với phiên bản trước."
+  },
+  "update_feature_pause_title": {
+    "message": "Thêm chức năng tạm dừng"
+  },
+  "update_feature_pause_description": {
+    "message": "Giờ đây bạn có thể tạm dừng từng chức năng trong khoảng thời gian đã chỉ định. Chức năng sẽ tự động bật lại khi hết thời gian. Bạn cũng có thể tạm dừng hoặc tiếp tục tất cả chức năng cùng lúc."
+  },
+  "update_feature_ui_title": {
+    "message": "Giao diện popup được làm mới"
+  },
+  "update_feature_ui_description": {
+    "message": "Popup được thiết kế lại theo dạng thẻ, giúp dễ dàng nắm bắt trạng thái chức năng và thời gian tạm dừng còn lại."
+  },
+  "update_feature_toast_title": {
+    "message": "Cải thiện thông báo dạng toast"
+  },
+  "update_feature_toast_description": {
+    "message": "Điều chỉnh giao diện thông báo dạng toast và khắc phục hiện tượng nhấp nháy khi thao tác liên tiếp."
+  },
+  "update_close_button": {
+    "message": "Đóng"
   }
 }

@@ -164,5 +164,32 @@
   },
   "option_export_button": {
     "message": "エクスポート"
+  },
+  "update_title": {
+    "message": "アップデートのお知らせ"
+  },
+  "update_intro": {
+    "message": "Honban Alertが最新バージョンに更新されました。前回のバージョンからの主な変更点は以下の通りです。"
+  },
+  "update_feature_pause_title": {
+    "message": "一時停止機能を追加"
+  },
+  "update_feature_pause_description": {
+    "message": "各機能を指定した時間だけ一時停止できるようになりました。時間が経過すると自動的に元の状態に戻ります。全機能をまとめて一時停止／再開することも可能です。"
+  },
+  "update_feature_ui_title": {
+    "message": "ポップアップのUIを刷新"
+  },
+  "update_feature_ui_description": {
+    "message": "カードベースのデザインに刷新し、設定状態や一時停止の残り時間がひと目で分かるようになりました。"
+  },
+  "update_feature_toast_title": {
+    "message": "通知デザインを改善"
+  },
+  "update_feature_toast_description": {
+    "message": "トースト通知の見た目を調整し、連続して操作した際のちらつきを防止しました。"
+  },
+  "update_close_button": {
+    "message": "閉じる"
   }
 }
