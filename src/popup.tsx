@@ -1,6 +1,7 @@
 /// <reference types="chrome" />
 import {
   ChakraProvider,
+  extendTheme,
   Box,
   FormLabel,
   Switch,
@@ -48,6 +49,48 @@ import {
 import React, { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import useI18n from "./useI18n";
+
+// ポップアップのカードUI（角丸・薄いボーダー）とブランドカラー（オレンジ）に
+// 合わせた、コンパクトなトーストの見た目を定義するテーマ拡張
+const theme = extendTheme({
+  components: {
+    Alert: {
+      baseStyle: {
+        container: {
+          borderRadius: "10px",
+          border: "1px solid",
+          borderColor: "orange.100",
+          boxShadow: "sm",
+          px: "10px",
+          py: "8px",
+        },
+        title: {
+          fontSize: "xs",
+          fontWeight: "semibold",
+        },
+        description: {
+          fontSize: "0.7rem",
+          color: "gray.600",
+        },
+        icon: {
+          boxSize: "4",
+          marginEnd: "2",
+        },
+      },
+      variants: {
+        subtle: {
+          container: {
+            bg: "orange.50",
+            color: "gray.700",
+          },
+          icon: {
+            color: "orange.500",
+          },
+        },
+      },
+    },
+  },
+});
 
 interface TargetDomain {
   targetDomain: string;
@@ -198,7 +241,24 @@ const Popup = () => {
   const [pauseMinutes, setPauseMinutes] = useState<string>("10");
   const cancelRef = React.useRef<HTMLButtonElement>(null);
   const pauseCancelRef = React.useRef<HTMLButtonElement>(null);
-  const toast = useToast();
+  const toast = useToast({
+    variant: "subtle",
+    duration: 1500,
+    isClosable: true,
+    containerStyle: { maxWidth: "240px" },
+  });
+  // 常に同じ id のトーストを使い回すことで、連続発火時に閉じるアニメーションと
+  // 開くアニメーションが重なって一瞬ちらつく（積み上がる）のを防ぐ。
+  // 既存トーストがあれば内容だけ差し替え、なければ新規作成する。
+  const toastIdRef = React.useRef<string | number | undefined>(undefined);
+  const showToast = (options: Exclude<Parameters<typeof toast>[0], undefined>) => {
+    const merged = { duration: 1500, ...options };
+    if (toastIdRef.current !== undefined && toast.isActive(toastIdRef.current)) {
+      toast.update(toastIdRef.current, merged);
+    } else {
+      toastIdRef.current = toast(merged);
+    }
+  };
   const message = useI18n();
 
   var url: string | undefined;
@@ -343,12 +403,10 @@ const Popup = () => {
     chrome.alarms.clear(`pause:${f}`);
     notifyContentScript();
     if (!silent) {
-      toast({
+      showToast({
         title: resumeToastTitleOf(f),
         description: message("change_setting_toast_description"),
         status: "success",
-        duration: 3000,
-        isClosable: true,
       });
     }
   };
@@ -360,12 +418,10 @@ const Popup = () => {
     chrome.storage.local.set({ [f]: false, [pauseUntilKeyOf(f)]: null });
     chrome.alarms.clear(`pause:${f}`);
     notifyContentScript();
-    toast({
+    showToast({
       title: turnOffToastTitleOf(f),
       description: message("change_setting_toast_description"),
       status: "success",
-      duration: 3000,
-      isClosable: true,
     });
   };
 
@@ -404,12 +460,10 @@ const Popup = () => {
     });
     pausedFeatures.forEach((f) => resumeFeature(f, true));
     notifyContentScript();
-    toast({
+    showToast({
       title: message("popup_resume_all_toast_title"),
       description: message("change_setting_toast_description"),
       status: "success",
-      duration: 3000,
-      isClosable: true,
     });
   };
 
@@ -437,12 +491,10 @@ const Popup = () => {
         : pauseTarget
           ? featureLabelOf(pauseTarget)
           : "";
-    toast({
+    showToast({
       title: message("change_setting_pause_toast_title", [label, String(minutes)]),
       description: message("change_setting_pause_toast_description"),
       status: "success",
-      duration: 3000,
-      isClosable: true,
     });
     setPauseTarget(null);
     setPauseAllTargets([]);
@@ -501,12 +553,10 @@ const Popup = () => {
     });
     setTargetDomainList(newDomainList);
     setIsEditFlg(false);
-    toast({
+    showToast({
       title: message("change_setting_domain_toast_title"),
       description: message("change_setting_toast_description"),
       status: "success",
-      duration: 9000,
-      isClosable: true,
     });
     if (url != undefined) {
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -883,7 +933,7 @@ const Popup = () => {
 const container = document.getElementById("root");
 const root = createRoot(container!);
 root.render(
-  <ChakraProvider>
+  <ChakraProvider theme={theme}>
     <Popup />
   </ChakraProvider>,
 );
