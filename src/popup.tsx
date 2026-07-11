@@ -146,71 +146,76 @@ const SettingToggle = ({
 }: SettingToggleProps) => {
   const isPaused = remainingMs != null && remainingMs > 0;
   return (
-    <Flex align="center" justify="space-between" w="100%">
-      <HStack spacing={1.5} align="center">
-        <FormLabel
-          htmlFor={id}
-          mb="0"
-          mr="0"
-          fontSize="sm"
-          fontWeight="medium"
-          cursor="pointer"
-        >
-          {title}
-        </FormLabel>
-        <Popover isLazy>
-          <PopoverTrigger>
-            <InfoOutlineIcon
-              boxSize={3.5}
-              color="gray.400"
-              cursor="pointer"
-              _hover={{ color: "orange.400" }}
-            />
-          </PopoverTrigger>
-          <PopoverContent maxW="230px" fontSize="sm">
-            <PopoverArrow />
-            <PopoverHeader fontWeight="semibold">{title}</PopoverHeader>
-            <PopoverBody>{convertBrToJsx(popoverBody)}</PopoverBody>
-          </PopoverContent>
-        </Popover>
-        {isPaused && (
-          <Badge
-            colorScheme="orange"
-            variant="subtle"
-            borderRadius="full"
-            px={2}
-            display="flex"
-            alignItems="center"
-            gap="3px"
-            fontSize="0.65rem"
-            textTransform="none"
+    <Flex direction="column" w="100%">
+      <Flex align="center" justify="space-between" w="100%">
+        <HStack spacing={1.5} align="center" minW="0">
+          <FormLabel
+            htmlFor={id}
+            mb="0"
+            mr="0"
+            fontSize="sm"
+            fontWeight="medium"
+            cursor="pointer"
+            whiteSpace="nowrap"
           >
-            <TimeIcon boxSize={2.5} />
-            {remainingLabel} {formatRemaining(remainingMs!)}
-          </Badge>
-        )}
-      </HStack>
-      <HStack spacing={1}>
-        {isChecked && (
-          <Tooltip label={pauseLabel} fontSize="xs" hasArrow>
-            <IconButton
-              aria-label={pauseLabel}
-              icon={<TimeIcon boxSize={3} />}
-              size="xs"
-              variant="ghost"
-              colorScheme="orange"
-              borderRadius="full"
-              onClick={onPauseClick}
-            />
-          </Tooltip>
-        )}
-        <Switch
-          id={id}
+            {title}
+          </FormLabel>
+          <Popover isLazy>
+            <PopoverTrigger>
+              <InfoOutlineIcon
+                boxSize={3.5}
+                color="gray.400"
+                cursor="pointer"
+                _hover={{ color: "orange.400" }}
+              />
+            </PopoverTrigger>
+            <PopoverContent maxW="230px" fontSize="sm">
+              <PopoverArrow />
+              <PopoverHeader fontWeight="semibold">{title}</PopoverHeader>
+              <PopoverBody>{convertBrToJsx(popoverBody)}</PopoverBody>
+            </PopoverContent>
+          </Popover>
+        </HStack>
+        <HStack spacing={1} flexShrink={0}>
+          {isChecked && (
+            <Tooltip label={pauseLabel} fontSize="xs" hasArrow>
+              <IconButton
+                aria-label={pauseLabel}
+                icon={<TimeIcon boxSize={3} />}
+                size="xs"
+                variant="ghost"
+                colorScheme="orange"
+                borderRadius="full"
+                onClick={onPauseClick}
+              />
+            </Tooltip>
+          )}
+          <Switch
+            id={id}
+            colorScheme="orange"
+            isChecked={isChecked}
+            onChange={onChange}
+          />
+        </HStack>
+      </Flex>
+      {isPaused && (
+        <Badge
+          alignSelf="flex-start"
+          mt="4px"
           colorScheme="orange"
-          isChecked={isChecked}
-          onChange={onChange}
-        />
-      </HStack>
+          variant="subtle"
+          borderRadius="full"
+          px={2}
+          display="flex"
+          alignItems="center"
+          gap="3px"
+          fontSize="0.65rem"
+          textTransform="none"
+        >
+          <TimeIcon boxSize={2.5} />
+          {remainingLabel} {formatRemaining(remainingMs!)}
+        </Badge>
+      )}
     </Flex>
   );
 };
