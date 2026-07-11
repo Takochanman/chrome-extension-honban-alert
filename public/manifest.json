@@ -10,9 +10,17 @@
     "page": "options.html"
   },
 
+  "icons": {
+    "16": "honban_alert_icon.png",
+    "48": "honban_alert_icon.png",
+    "128": "honban_alert_icon.png"
+  },
+
   "action": {
     "default_icon": {
-      "16": "honban_alert_icon.png"
+      "16": "honban_alert_icon.png",
+      "48": "honban_alert_icon.png",
+      "128": "honban_alert_icon.png"
     },
     "default_popup": "popup.html"
   },
