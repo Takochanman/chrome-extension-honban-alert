@@ -1,0 +1,40 @@
+{
+  "colors": {
+    "brand_1": { "top": [24, 15, 14], "bottom": [214, 60, 40] },
+    "brand_2": { "top": [24, 15, 14], "bottom": [232, 100, 40] }
+  },
+  "slides": [
+    {
+      "screenshot": "docs/store_assets/screenshot-1-banner.png",
+      "out": "docs/store_assets/promo-1-banner.png",
+      "headline": "本番環境への誤操作を防ぐ",
+      "color": "brand_1"
+    },
+    {
+      "screenshot": "docs/store_assets/screenshot-2-settings.png",
+      "out": "docs/store_assets/promo-2-settings.png",
+      "headline": "3つの保護機能をワンクリック切替",
+      "color": "brand_2",
+      "headline_size": 44
+    },
+    {
+      "screenshot": "docs/store_assets/screenshot-3-any-site.png",
+      "out": "docs/store_assets/promo-3-any-site.png",
+      "headline": "どんなサイトでもしっかり警告",
+      "color": "brand_1"
+    },
+    {
+      "screenshot": "docs/store_assets/screenshot-5-request-block.png",
+      "out": "docs/store_assets/promo-4-request-block.png",
+      "headline": "本番環境へのリクエストを未然にブロック",
+      "color": "brand_1",
+      "headline_size": 42
+    },
+    {
+      "screenshot": "docs/store_assets/screenshot-4-options.png",
+      "out": "docs/store_assets/promo-5-options.png",
+      "headline": "設定をJSONで書き出し・共有",
+      "color": "brand_2"
+    }
+  ]
+}
