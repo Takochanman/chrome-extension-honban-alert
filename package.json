@@ -1,7 +1,7 @@
 {
-  "name": "chrome-extension-sample",
-  "version": "1.0.0",
-  "description": "chrome-extension-sample",
+  "name": "chrome-extension-honban-alert",
+  "version": "1.5.0",
+  "description": "chrome-extension-honban-alert",
   "main": "index.js",
   "scripts": {
     "watch": "webpack --config webpack/webpack.dev.js --watch",
@@ -10,8 +10,8 @@
     "test": "npx jest",
     "style": "prettier --write \"src/**/*.{ts,tsx}\""
   },
-  "author": "",
-  "license": "MIT",
+  "author": "nico253",
+  "license": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/Takochanman/chrome-extension-honban-alert.git"
